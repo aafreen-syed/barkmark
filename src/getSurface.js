@@ -125,8 +125,8 @@ function surface (textarea, editable, droparea) {
 
   function writeSelectionEditable (state) {
     var chunks = state.cachedChunks || state.getChunks();
-    var start = chunks.before.length;
-    var end = start + chunks.selection.length;
+    var start = unescapeText(chunks.before).length;
+    var end = start + unescapeText(chunks.selection).length;
     var p = {};
 
     walk(editable.firstChild, peek);
@@ -134,8 +134,8 @@ function surface (textarea, editable, droparea) {
     setSelection(p);
 
     function peek (context, el) {
-      var cursor = context.text.length;
-      var content = readNode(el).length;
+      var cursor = unescapeText(context.text).length;
+      var content = readNode(el, false).length;
       var sum = cursor + content;
       if (!p.startContainer && sum >= start) {
         p.startContainer = el;
@@ -169,11 +169,13 @@ function surface (textarea, editable, droparea) {
     }
 
     function peek (context, el) {
+      var elText = (el.textContent || el.innerText || '');
+
       if (el === sel.anchorNode) {
-        context.start = context.text.length + sel.anchorOffset;
+        context.start = context.text.length + escapeNodeText(elText.substring(0, sel.anchorOffset)).length;
       }
       if (el === sel.focusNode) {
-        context.end = context.text.length + sel.focusOffset;
+        context.end = context.text.length + escapeNodeText(elText.substring(0, sel.focusOffset)).length;
       }
     }
   }
@@ -208,14 +210,39 @@ function surface (textarea, editable, droparea) {
     }
   }
 
-  function readNode (el) {
+  function readNode (el, escape) {
     if(el.nodeType === 3) {
-      // Using browser escaping to clean up any special characters
-      var toText = doc.createElement('div');
-      toText.appendChild(el.cloneNode());
-      return toText.innerHTML || '';
+      if(escape === false) {
+        return el.textContent || el.innerText || '';
+      }
+
+      return escapeNodeText(el);
     }
     return '';
+  }
+
+  function escapeNodeText (el) {
+    el = el || '';
+    if(el.nodeType === 3) {
+      el = el.cloneNode();
+    } else {
+      el = doc.createTextNode(el);
+    }
+
+    // Using browser escaping to clean up any special characters
+    var toText = doc.createElement('div');
+    toText.appendChild(el);
+    return toText.innerHTML || '';
+  }
+
+  function unescapeText (el) {
+    if(el.nodeType) {
+      return el.textContent || el.innerText || '';
+    }
+
+    var toText = doc.createElement('div');
+    toText.textContent = el;
+    return toText.textContent;
   }
 }
 
