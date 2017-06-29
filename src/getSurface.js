@@ -209,7 +209,13 @@ function surface (textarea, editable, droparea) {
   }
 
   function readNode (el) {
-    return el.nodeType === 3 ? fixEOL(el.textContent || el.innerText || '') : '';
+    if(el.nodeType === 3) {
+      // Using browser escaping to clean up any special characters
+      var toText = doc.createElement('div');
+      toText.appendChild(el.cloneNode());
+      return toText.innerHTML || '';
+    }
+    return '';
   }
 }
 
