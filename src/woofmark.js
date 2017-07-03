@@ -1,6 +1,5 @@
 'use strict';
 
-var ls = require('local-storage');
 var crossvent = require('crossvent');
 var kanye = require('kanye');
 var uploads = require('./uploads');
@@ -67,7 +66,7 @@ function woofmark (textarea, options) {
   if (o.classes.prompts === void 0) { o.classes.prompts = {}; }
   if (o.classes.input === void 0) { o.classes.input = {}; }
 
-  var preference = o.storage && ls.get(o.storage);
+  var preference = o.storage && localStorage.getItem(JSON.parse(o.storage));
   if (preference) {
     o.defaultMode = preference;
   }
@@ -253,7 +252,7 @@ function woofmark (textarea, options) {
     old.removeAttribute('disabled');
     editor.mode = nextMode;
 
-    if (o.storage) { ls.set(o.storage, nextMode); }
+    if (o.storage) { localStorage.setItem(o.storage, JSON.stringify(nextMode)); }
 
     history.setInputMode(nextMode);
     if (remembrance) { remembrance.unmark(); }
