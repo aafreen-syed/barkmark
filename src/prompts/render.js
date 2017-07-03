@@ -1,6 +1,5 @@
 'use strict';
 
-var crossvent = require('crossvent');
 var getText = require('../getText');
 var setText = require('../setText');
 var classes = require('../classes');
@@ -79,8 +78,8 @@ function uploads (dom, warning) {
   dom.section[ac](domup.dragdrop);
   dom.section[ac](domup.area);
   setText(dom.desc, getText(dom.desc) + strings.prompts.upload);
-  crossvent.add(domup.fileinput, 'focus', focusedFileInput);
-  crossvent.add(domup.fileinput, 'blur', blurredFileInput);
+  domup.fileinput.addEventListener('focus', focusedFileInput);
+  domup.fileinput.addEventListener('blur', blurredFileInput);
 
   function focusedFileInput () {
     classes.add(domup.upload, 'wk-focused');

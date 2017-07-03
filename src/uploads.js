@@ -1,6 +1,5 @@
 'use strict';
 
-var crossvent = require('crossvent');
 var classes = require('./classes');
 var dragClass = 'wk-dragging';
 var dragClassSpecific = 'wk-container-dragging';
@@ -8,11 +7,11 @@ var root = document.documentElement;
 
 function uploads (container, droparea, editor, options, remove) {
   var op = remove ? 'remove' : 'add';
-  crossvent[op](root, 'dragenter', dragging);
-  crossvent[op](root, 'dragend', dragstop);
-  crossvent[op](root, 'mouseout', dragstop);
-  crossvent[op](container, 'dragover', handleDragOver, false);
-  crossvent[op](droparea, 'drop', handleFileSelect, false);
+  root[op + 'EventListener']('dragenter', dragging);
+  root[op + 'EventListener']('dragend', dragstop);
+  root[op + 'EventListener']('mouseout', dragstop);
+  root[op + 'EventListener']('dragover', handleDragOver, false);
+  root[op + 'EventListener']('drop', handleFileSelect, false);
 
   function dragging () {
     classes.add(droparea, dragClass);

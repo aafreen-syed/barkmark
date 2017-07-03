@@ -1,6 +1,6 @@
 'use strict';
 
-var crossvent = require('crossvent');
+var utils = require('../utils');
 var once = require('../once');
 var strings = require('../strings');
 var parseLinkInput = require('../chunks/parseLinkInput');
@@ -53,7 +53,7 @@ function linkOrImageOrAttachment (chunks, options) {
       chunks.selection = parts.selection;
       chunks.after = parts.after;
       resume();
-      crossvent.fabricate(options.surface.textarea, 'woofmark-mode-change');
+      utils.dispatchCustomEvent(options.surface.textarea, 'woofmark-mode-change');
       return;
     }
 

@@ -1,6 +1,5 @@
 'use strict';
 
-var crossvent = require('crossvent');
 var bureaucracy = require('bureaucracy');
 var render = require('./render');
 var classes = require('../classes');
@@ -31,11 +30,11 @@ function prompt (options, done) {
   });
   var domup;
 
-  crossvent.add(dom.cancel, 'click', remove);
-  crossvent.add(dom.close, 'click', remove);
-  crossvent.add(dom.ok, 'click', ok);
-  crossvent.add(dom.input, 'keypress', enter);
-  crossvent.add(dom.dialog, 'keydown', esc);
+  dom.cancel.addEventListener('click', remove);
+  dom.close.addEventListener('click', remove);
+  dom.ok.addEventListener('click', ok);
+  dom.input.addEventListener('keypress', enter);
+  dom.dialog.addEventListener('keydown', esc);
   classify(dom, options.classes.prompts);
 
   var upload = options.upload;
@@ -86,9 +85,9 @@ function prompt (options, done) {
 
   function bindUploadEvents (remove) {
     var op = remove ? 'remove' : 'add';
-    crossvent[op](root, 'dragenter', dragging);
-    crossvent[op](root, 'dragend', dragstop);
-    crossvent[op](root, 'mouseout', dragstop);
+    root[op + 'EventListener']('dragenter', dragging);
+    root[op + 'EventListener']('dragend', dragstop);
+    root[op + 'EventListener']('mouseout', dragstop);
   }
 
   function dragging () {
@@ -104,8 +103,8 @@ function prompt (options, done) {
   function arrangeUploads () {
     domup = render.uploads(dom, strings.prompts.types + (upload.restriction || options.type + 's'));
     bindUploadEvents();
-    crossvent.add(domup.area, 'dragover', handleDragOver, false);
-    crossvent.add(domup.area, 'drop', handleFileSelect, false);
+    domup.area.addEventListener('dragover', handleDragOver, false);
+    domup.area.addEventListener('drop', handleFileSelect, false);
     classify(domup, options.classes.prompts);
 
     var bureaucrat = bureaucracy.setup(domup.fileinput, {

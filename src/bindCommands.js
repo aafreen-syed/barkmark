@@ -1,6 +1,6 @@
 'use strict';
 
-var crossvent = require('crossvent');
+var utils = require('./utils');
 var commands = {
   markdown: {
     boldOrItalic: require('./markdown/boldOrItalic'),
@@ -43,7 +43,7 @@ function bindCommands (surface, options, editor) {
 
   function fabricator (el) {
     return function open () {
-      crossvent.fabricate(el, 'click');
+      utils.dispatchClickEvent(el);
     };
   }
   function bold (mode, chunks) {

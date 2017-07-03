@@ -1,12 +1,9 @@
 'use strict';
 
 var doc = global.document;
-var seleccion = require('seleccion');
 var fixEOL = require('./fixEOL');
 var many = require('./many');
 var cast = require('./cast');
-var getSelection = seleccion.get;
-var setSelection = seleccion.set;
 var ropen = /^(<[^>]+(?: [^>]*)?>)/;
 var rclose = /(<\/[^>]+>)$/;
 
@@ -127,23 +124,25 @@ function surface (textarea, editable, droparea) {
     var chunks = state.cachedChunks || state.getChunks();
     var start = unescapeText(chunks.before).length;
     var end = start + unescapeText(chunks.selection).length;
-    var p = {};
+    var p = doc.createRange();
+    var startRangeSet = false;
+    var endRangeSet = false;
 
     walk(editable.firstChild, peek);
     editable.focus();
-    setSelection(p);
+    DOMSelection.setRange(p);
 
     function peek (context, el) {
       var cursor = unescapeText(context.text).length;
       var content = readNode(el, false).length;
       var sum = cursor + content;
-      if (!p.startContainer && sum >= start) {
-        p.startContainer = el;
-        p.startOffset = bounded(start - cursor);
+      if (!startRangeSet && sum >= start) {
+        p.setStart(el, bounded(start - cursor));
+        startRangeSet = true;
       }
-      if (!p.endContainer && sum >= end) {
-        p.endContainer = el;
-        p.endOffset = bounded(end - cursor);
+      if (!endRangeSet && sum >= end) {
+        p.setEnd(el, bounded(end - cursor));
+        endRangeSet = true;
       }
 
       function bounded (offset) {
@@ -153,7 +152,7 @@ function surface (textarea, editable, droparea) {
   }
 
   function readSelectionEditable (state) {
-    var sel = getSelection();
+    var sel = DOMSelection.getRange();
     var distance = walk(editable.firstChild, peek);
     var start = distance.start || 0;
     var end = distance.end || 0;

@@ -1,7 +1,7 @@
 'use strict';
 
-var crossvent = require('crossvent');
 var kanye = require('kanye');
+var utils = require('./utils');
 var uploads = require('./uploads');
 var strings = require('./strings');
 var setText = require('./setText');
@@ -40,31 +40,36 @@ function woofmark (textarea, options) {
     throw new Error('woofmark demands <textarea> elements to have no siblings');
   }
 
-  var o = options || {};
-  if (o.markdown === void 0) { o.markdown = true; }
-  if (o.html === void 0) { o.html = true; }
-  if (o.wysiwyg === void 0) { o.wysiwyg = true; }
+  var o = utils.defaultsDeep(options || {}, {
+    // Default Option Values
+    markdown: true,
+    html: true,
+    wysiwyg: true,
+    hr: false,
+    storage: true,
+    fencing: true,
+    render: {
+      modes: {},
+      commands: {},
+    },
+    prompts: {
+      link: prompt,
+      image: prompt,
+      attachment: prompt,
+      close: cloePrompts,
+    },
+    classes: {
+      wysiwyg: [],
+      prompts: {},
+      input: {},
+    },
+  });
 
   if (!o.markdown && !o.html && !o.wysiwyg) {
     throw new Error('woofmark expects at least one input mode to be available');
   }
-
-  if (o.hr === void 0) { o.hr = false; }
-  if (o.storage === void 0) { o.storage = true; }
+  
   if (o.storage === true) { o.storage = 'woofmark_input_mode'; }
-  if (o.fencing === void 0) { o.fencing = true; }
-  if (o.render === void 0) { o.render = {}; }
-  if (o.render.modes === void 0) { o.render.modes = {}; }
-  if (o.render.commands === void 0) { o.render.commands = {}; }
-  if (o.prompts === void 0) { o.prompts = {}; }
-  if (o.prompts.link === void 0) { o.prompts.link = prompt; }
-  if (o.prompts.image === void 0) { o.prompts.image = prompt; }
-  if (o.prompts.attachment === void 0) { o.prompts.attachment = prompt; }
-  if (o.prompts.close === void 0) { o.prompts.close = closePrompts; }
-  if (o.classes === void 0) { o.classes = {}; }
-  if (o.classes.wysiwyg === void 0) { o.classes.wysiwyg = []; }
-  if (o.classes.prompts === void 0) { o.classes.prompts = {}; }
-  if (o.classes.input === void 0) { o.classes.input = {}; }
 
   var preference = o.storage && localStorage.getItem(JSON.parse(o.storage));
   if (preference) {
@@ -128,7 +133,7 @@ function woofmark (textarea, options) {
 
   if (o.wysiwyg) {
     place = tag({ c: 'wk-wysiwyg-placeholder wk-hide', x: textarea.placeholder });
-    crossvent.add(place, 'click', focusEditable);
+    place.addEventListener('click', focusEditable);
   }
 
   if (o.defaultMode && o[o.defaultMode]) {
@@ -152,7 +157,7 @@ function woofmark (textarea, options) {
     if (o[id]) {
       switchboard.appendChild(button);
       (typeof custom === 'function' ? custom : renderers.modes)(button, id);
-      crossvent.add(button, 'click', modes[id].set);
+      button.addEventListener('click', modes[id].set);
       button.type = 'button';
       button.tabIndex = -1;
 
@@ -267,7 +272,7 @@ function woofmark (textarea, options) {
 
   function fireLater (type) {
     setTimeout(function fire () {
-      crossvent.fabricate(textarea, type);
+      utils.dispatchCustomEvent(textarea, type);
     }, 0);
   }
 
@@ -317,7 +322,7 @@ function woofmark (textarea, options) {
     button.type = 'button';
     button.tabIndex = -1;
     render(button, id);
-    crossvent.add(button, 'click', getCommandHandler(surface, history, fn));
+    button.addEventListener('click', getCommandHandler(surface, history, fn));
     if (combo) {
       addCommand(combo, fn);
     }
