@@ -1,7 +1,7 @@
 {
-  "name": "woofmark",
-  "version": "4.2.3",
-  "description": "Barking up the DOM tree. A modular, progressive, and beautiful Markdown and HTML editor",
+  "name": "barkmark",
+  "version": "1.0.0",
+  "description": "A modular, and progressive Markdown editor. Originally based off of the woofmark editor",
   "main": "src/woofmark.js",
   "scripts": {
     "start": "browserify -s woofmark -do dist/woofmark.js src/woofmark.js && browserify -s example -do dist/example.js example/example.js && watchify -s woofmark -dvo dist/woofmark.js src/woofmark.js & watchify -s example -dvo dist/example.js example/example.js & stylus -w src/woofmark.styl -o dist",
@@ -14,14 +14,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bevacqua/woofmark.git"
+    "url": "https://github.com/BlinkUX/woofmark.git"
   },
-  "author": "Nicolas Bevacqua <nicolasbevacqua@gmail.com> (http://bevacqua.io/)",
+  "author": "Andrew Hushbeck <andrew@blinkux.com>",
+  "contributors": [
+    {
+      "name": "Nicolas Bevacqua",
+      "email": "nicolasbevacqua@gmail.com",
+      "url": "http://bevacqua.io/"
+    },
+    {
+      "name": "Andrew Hushbeck",
+      "email": "andrew@blinkux.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bevacqua/woofmark/issues"
+    "url": "https://github.com/BlinkUX/woofmark/issues"
   },
-  "homepage": "https://github.com/bevacqua/woofmark",
+  "homepage": "https://github.com/BlinkUX/woofmark",
   "dependencies": {},
   "devDependencies": {
     "browserify": "8.1.0",

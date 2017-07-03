@@ -1,14 +1,15 @@
 {
-  "name": "woofmark",
-  "version": "4.2.3",
-  "description": "Barking up the DOM tree. A modular, progressive, and beautiful Markdown and HTML editor",
+  "name": "barkmark",
+  "version": "1.0.0",
+  "description": "A modular, and progressive Markdown editor. Originally based off of the woofmark editor",
   "main": [
     "dist/woofmark.js",
     "dist/woofmark.css"
   ],
-  "homepage": "https://github.com/bevacqua/woofmark",
+  "homepage": "https://github.com/BlinkUX/woofmark",
   "authors": [
-    "Nicolas Bevacqua <nicolasbevacqua@gmail.com>"
+    "Nicolas Bevacqua <nicolasbevacqua@gmail.com>",
+    "Andrew Hushbeck <andrew@blinkux.com"
   ],
   "license": "MIT",
   "dependencies": {
