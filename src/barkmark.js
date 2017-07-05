@@ -4,7 +4,6 @@ var kanye = require('kanye');
 var utils = require('./utils');
 var uploads = require('./uploads');
 var strings = require('./strings');
-var setText = require('./setText');
 var bindCommands = require('./bindCommands');
 var InputHistory = require('./InputHistory');
 var getCommandHandler = require('./getCommandHandler');
@@ -340,7 +339,7 @@ function tag (options) {
   var o = options || {};
   var el = doc.createElement(o.t || 'div');
   el.className = o.c || '';
-  setText(el, o.x || '');
+  el.textContent = o.x || '';
   if (o.p) { o.p.appendChild(el); }
   return el;
 }
