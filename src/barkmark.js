@@ -29,7 +29,7 @@ function find (textarea) {
   return null;
 }
 
-function woofmark (textarea, options) {
+function barkmark (textarea, options) {
   var cached = find(textarea);
   if (cached) {
     return cached;
@@ -37,7 +37,7 @@ function woofmark (textarea, options) {
 
   var parent = textarea.parentElement;
   if (parent.children.length > 1) {
-    throw new Error('woofmark demands <textarea> elements to have no siblings');
+    throw new Error('barkmark demands <textarea> elements to have no siblings');
   }
 
   var o = utils.defaultsDeep(options || {}, {
@@ -66,10 +66,10 @@ function woofmark (textarea, options) {
   });
 
   if (!o.markdown && !o.html && !o.wysiwyg) {
-    throw new Error('woofmark expects at least one input mode to be available');
+    throw new Error('barkmark expects at least one input mode to be available');
   }
   
-  if (o.storage === true) { o.storage = 'woofmark_input_mode'; }
+  if (o.storage === true) { o.storage = 'barkmark_input_mode'; }
 
   var preference = o.storage && localStorage.getItem(JSON.parse(o.storage));
   if (preference) {
@@ -103,7 +103,7 @@ function woofmark (textarea, options) {
   };
   var entry = { ta: textarea, editor: editor };
   var i = cache.push(entry);
-  var kanyeContext = 'woofmark_' + i;
+  var kanyeContext = 'barkmark_' + i;
   var kanyeOptions = {
     filter: parent,
     context: kanyeContext
@@ -261,7 +261,7 @@ function woofmark (textarea, options) {
 
     history.setInputMode(nextMode);
     if (remembrance) { remembrance.unmark(); }
-    fireLater('woofmark-mode-change');
+    fireLater('barkmark-mode-change');
 
     function parse (method, input) {
       return o[method](input, {
@@ -361,6 +361,6 @@ function macify (text) {
     .replace(/\bshift\b/i, '\u21e7');
 }
 
-woofmark.find = find;
-woofmark.strings = strings;
-module.exports = woofmark;
+barkmark.find = find;
+barkmark.strings = strings;
+module.exports = barkmark;

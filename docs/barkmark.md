@@ -1,17 +1,17 @@
-# `woofmark.find(textarea)`
+# `barkmark.find(textarea)`
 
-Returns an [editor](#editor) object associated with a `woofmark` instance, or `null` if none exists for the `textarea` yet. When `woofmark(textarea, options?)` is called, `woofmark.find` will be used to look up an existing instance, which gets immediately returned.
+Returns an [editor](#editor) object associated with a `barkmark` instance, or `null` if none exists for the `textarea` yet. When `barkmark(textarea, options?)` is called, `barkmark.find` will be used to look up an existing instance, which gets immediately returned.
 
-# `woofmark(textarea, options?)`
+# `barkmark(textarea, options?)`
 
 Adds rich editing capabilities to a `textarea` element. Returns an [editor](#editor) object.
 
 ### `options.parseMarkdown`
 
-A method that's called by `woofmark` whenever it needs to parse Markdown into HTML. This way, editing user input is decoupled from a Markdown parser. We suggest you use [megamark][1] to parse Markdown. This parser is used whenever the editor switches from Markdown mode into HTML or WYSIWYG mode.
+A method that's called by `barkmark` whenever it needs to parse Markdown into HTML. This way, editing user input is decoupled from a Markdown parser. We suggest you use [megamark][1] to parse Markdown. This parser is used whenever the editor switches from Markdown mode into HTML or WYSIWYG mode.
 
 ```js
-woofmark(textarea, {
+barkmark(textarea, {
   parseMarkdown: require('megamark')
 });
 ```
@@ -20,15 +20,15 @@ For optimal consistency, your `parseMarkdown` method should match whatever Markd
 
 ### `options.parseHTML`
 
-A method that's called by `woofmark` whenever it needs to parse HTML or a DOM tree into Markdown. This way, editing user input is decoupled from a DOM parser. We suggest you use [domador][2] to parse HTML and DOM. This parser is used whenever the editor switches to Markdown mode, and also when [.value()](#editorvalue) is called while in the HTML or WYSIWYG modes.
+A method that's called by `barkmark` whenever it needs to parse HTML or a DOM tree into Markdown. This way, editing user input is decoupled from a DOM parser. We suggest you use [domador][2] to parse HTML and DOM. This parser is used whenever the editor switches to Markdown mode, and also when [.value()](#editorvalue) is called while in the HTML or WYSIWYG modes.
 
 ```js
-woofmark(textarea, {
+barkmark(textarea, {
   parseHTML: require('domador')
 });
 ```
 
-If you're implementing your own `parseHTML` method, note that `woofmark` will call `parseHTML` with either a DOM element or a Markdown string.
+If you're implementing your own `parseHTML` method, note that `barkmark` will call `parseHTML` with either a DOM element or a Markdown string.
 
 While the `parseHTML` method will never map HTML back to the original Markdown in 100% cases, _(because you can't really know if the original source was plain HTML or Markdown)_, it should strive to detokenize whatever special tokens you may allow in `parseMarkdown`, so that the user isn't met with inconsistent output when switching between the different editing modes.
 
@@ -42,19 +42,19 @@ assert.equal(parseHTML(parseMarkdown(parsed)), parsed);
 As an example, consider the following piece of Markdown:
 
 ```markdown
-Hey @bevacqua I _love_ [woofmark](https://github.com/bevacqua/woofmark)!
+Hey @bevacqua I _love_ [barkmark](https://github.com/bevacqua/barkmark)!
 ```
 
 Without any custom Markdown hooks, it would translate to HTML similar to the following:
 
 ```html
-<p>Hey @bevacqua I <em>love</em> <a href="https://github.com/bevacqua/woofmark">woofmark</a>!</p>
+<p>Hey @bevacqua I <em>love</em> <a href="https://github.com/bevacqua/barkmark">barkmark</a>!</p>
 ```
 
 However, suppose we were to add a tokenizer in our `megamark` configuration, like below:
 
 ```js
-woofmark(textarea, {
+barkmark(textarea, {
   parseMarkdown: function (input) {
     return require('megamark')(input, {
       tokenizers: [{
@@ -72,19 +72,19 @@ woofmark(textarea, {
 Our HTML output would now look slightly different.
 
 ```html
-<p>Hey <a href="/users/bevacqua">@bevacqua</a> I <em>love</em> <a href="https://github.com/bevacqua/woofmark">woofmark</a>!</p>
+<p>Hey <a href="/users/bevacqua">@bevacqua</a> I <em>love</em> <a href="https://github.com/bevacqua/barkmark">barkmark</a>!</p>
 ```
 
 The problem is that `parseHTML` doesn't know about the tokenizer, so if you were to convert the HTML back into Markdown, you'd get:
 
 ```markdown
-Hey [@bevacqua](/users/bevacqua) I _love_ [woofmark](https://github.com/bevacqua/woofmark)!
+Hey [@bevacqua](/users/bevacqua) I _love_ [barkmark](https://github.com/bevacqua/barkmark)!
 ```
 
 The solution is to let `parseHTML` _"know"_ about the tokenizer, so to speak. In the example below, `domador` is now aware that links that start with `@` should be converted back into something like `@bevacqua`.
 
 ```js
-woofmark(textarea, {
+barkmark(textarea, {
   parseMarkdown: function (input) {
     return require('megamark')(input, {
       tokenizers: [{
@@ -135,7 +135,7 @@ Sets the default `mode` for the editor.
 
 ### `options.storage`
 
-Enables this particular instance `woofmark` to remember the user's preferred input mode. If enabled, the type of input mode will be persisted across browser refreshes using `localStorage`. You can pass in `true` if you'd like all instances to share the same `localStorage` property name, but you can also pass in the property name you want to use, directly. Useful for grouping preferences as you see fit.
+Enables this particular instance `barkmark` to remember the user's preferred input mode. If enabled, the type of input mode will be persisted across browser refreshes using `localStorage`. You can pass in `true` if you'd like all instances to share the same `localStorage` property name, but you can also pass in the property name you want to use, directly. Useful for grouping preferences as you see fit.
 
 <sub>Note that the mode saved by storage is always preferred over the default mode.</sub>
 
@@ -146,10 +146,10 @@ This option can be set to a method that determines how to fill the Markdown, HTM
 ###### Example
 
 ```js
-woofmark(textarea, {
+barkmark(textarea, {
   render: {
     modes: function (button, id) {
-      button.className = 'woofmark-mode-' + id;
+      button.className = 'barkmark-mode-' + id;
     }
   }
 });
@@ -187,7 +187,7 @@ If you wish to set up file uploads, _in addition to letting the user just paste 
 }
 ```
 
-`woofmark` expects a JSON response including a `results` property that's an array describing the success of each file upload. Each file's entry should include an `href` and a `title`:
+`barkmark` expects a JSON response including a `results` property that's an array describing the success of each file upload. Each file's entry should include an `href` and a `title`:
 
 ```js
 {
@@ -203,9 +203,9 @@ For more information on file uploads, see [`bureaucracy`](https://github.com/bev
 
 Virtually the same as `images`, except an anchor `<a>` tag will be used instead of an image `<img>` tag.
 
-# `woofmark.strings`
+# `barkmark.strings`
 
-To enable localization, `woofmark.strings` exposes all user-facing messages used in woofmark. Make sure not to replace `woofmark.strings` with a new object, as a reference to it is cached during module load.
+To enable localization, `barkmark.strings` exposes all user-facing messages used in barkmark. Make sure not to replace `barkmark.strings` with a new object, as a reference to it is cached during module load.
 
 [1]: https://github.com/bevacqua/megamark
 [2]: https://github.com/bevacqua/domador

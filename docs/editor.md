@@ -1,6 +1,6 @@
 # `editor`
 
-The `editor` API allows you to interact with `woofmark` editor instances. This is what you get back from `woofmark(textarea, options)` or `woofmark.find(textarea)`.
+The `editor` API allows you to interact with `barkmark` editor instances. This is what you get back from `barkmark(textarea, options)` or `barkmark.find(textarea)`.
 
 ### `editor.addCommand(combo, fn)`
 
@@ -20,7 +20,7 @@ editor.addCommand('cmd+j', function jump (e, mode, chunks) {
 });
 ```
 
-When the command finishes, the editor will recover focus, and whatever changes where made to the `chunks` object will be applied to the editor. All commands performed by `woofmark` work this way, so please take a look [at the source code][2] if you want to implement your own commands.
+When the command finishes, the editor will recover focus, and whatever changes where made to the `chunks` object will be applied to the editor. All commands performed by `barkmark` work this way, so please take a look [at the source code][2] if you want to implement your own commands.
 
 ### `editor.addCommandButton(id, combo?, fn)`
 
@@ -93,4 +93,4 @@ Returns a boolean value indicating whether there are any operations left to undo
 Returns a boolean value indicating whether there are any operations left to redo.
 
 [1]: https://github.com/bevacqua/kanye#kanyeoncombo-options-listener
-[2]: https://github.com/bevacqua/woofmark/blob/master/src/html/hr.js
+[2]: https://github.com/bevacqua/barkmark/blob/master/src/html/hr.js

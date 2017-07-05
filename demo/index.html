@@ -1,18 +1,18 @@
 <!doctype html>
-<link href='dist/woofmark.css' rel='stylesheet' type='text/css' />
-<link href='example/example.css' rel='stylesheet' type='text/css' />
-<link href='example/highlights.css' rel='stylesheet' type='text/css' />
-<title>woofmark</title>
-<h1>woofmark</h1>
-<h3>Barking up the DOM tree. <b>**woof** &lt;strong&gt;woof&lt;/strong&gt;</b><br/>A modular, progressive, and beautiful Markdown and HTML editor</h3>
-<a href='https://github.com/bevacqua/woofmark'>
-  <img class='gh-fork' src='https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67' alt='Fork me on GitHub' data-canonical-src='https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png' />
-</a>
-<script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=githubcombevacqua" id="_carbonads_js"></script>
-<div class='parent'>
-  <label for='ta'>Create your website in the area below: </label>
-  <div>
-    <textarea id='ta', autofocus># Markdown?
+<html>
+	<head>
+		<link href='dist/barkmark.css' rel='stylesheet' type='text/css' />
+		<link href='example/example.css' rel='stylesheet' type='text/css' />
+		<link href='example/highlights.css' rel='stylesheet' type='text/css' />
+		<title>barkmark</title>
+	</head>
+	<body>
+		<h1>barkmark</h1>
+		<p>A modular, and progressive Markdown editor. Originally based off of the <a href="https://github.com/bevacqua/woofmark">woofmark editor</a></p>
+		<div class='parent'>
+			<label for='ta'>Create your website in the area below: </label>
+			<div>
+				<textarea id='ta' autofocus># Markdown?
 
 Here's a teensie bit of [Markdown][1] to get you started.
 
@@ -38,20 +38,11 @@ function code (<mark>here, are, some, args</mark>) {
 
 [1]: http://daringfireball.net/projects/markdown/ "Original introduction to Markdown"
 [2]: http://ponyfoo.com</textarea>
-  </div>
-  <pre>
-    <code>
-woofmark(document.querySelector('#ta'), {
-  parseMarkdown: megamark,
-  parseHTML: domador
-});
-    </code>
-  </pre>
-  <sub><strong>Disclaimer:</strong> the example has a teensie bit more of code that's used to preserve the GitHub-style <kbd>```</kbd> code fences.</sub>
-</div>
-<div class='parent'>
-  <label>The buttons above look kind of rough, but that's on purpose: it's up to you to style them and the API helps you do that. Here's another example using Font Awesome.</label>
-  <img src='http://i.imgur.com/AhwXSLu.png' />
-</div>
-<h3>Get it on GitHub! <a href='https://github.com/bevacqua/woofmark'>bevacqua/woofmark</a></h3>
-<script src='dist/example.js'></script>
+			</div>
+		</div>
+		<h3>Get it on GitHub! <a href='https://github.com/BlinkUX/barkmark'>BlinkUX/barkmark</a></h3>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.0/to-markdown.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.3.1/markdown-it.min.js'></script>
+		<script src='dist/example.js'></script>
+	</body>
+</html>
