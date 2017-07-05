@@ -5,7 +5,6 @@ var utils = require('./utils');
 var uploads = require('./uploads');
 var strings = require('./strings');
 var setText = require('./setText');
-var rememberSelection = require('./rememberSelection');
 var bindCommands = require('./bindCommands');
 var InputHistory = require('./InputHistory');
 var getCommandHandler = require('./getCommandHandler');
@@ -203,7 +202,6 @@ function barkmark (textarea, options) {
   function wysiwygMode (e) { persistMode('wysiwyg', e); }
 
   function persistMode (nextMode, e) {
-    var remembrance;
     var currentMode = editor.mode;
     var old = modes[currentMode].button;
     var button = modes[nextMode].button;
@@ -215,7 +213,6 @@ function barkmark (textarea, options) {
       return;
     }
 
-    remembrance = focusing && rememberSelection(history, o);
     textarea.blur(); // avert chrome repaint bugs
 
     if (nextMode === 'markdown') {
@@ -260,12 +257,10 @@ function barkmark (textarea, options) {
     if (o.storage) { localStorage.setItem(o.storage, JSON.stringify(nextMode)); }
 
     history.setInputMode(nextMode);
-    if (remembrance) { remembrance.unmark(); }
     fireLater('barkmark-mode-change');
 
     function parse (method, input) {
       return o[method](input, {
-        markers: remembrance && remembrance.markers || []
       });
     }
   }
