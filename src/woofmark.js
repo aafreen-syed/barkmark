@@ -56,7 +56,7 @@ function woofmark (textarea, options) {
       link: prompt,
       image: prompt,
       attachment: prompt,
-      close: cloePrompts,
+      close: closePrompts,
     },
     classes: {
       wysiwyg: [],
