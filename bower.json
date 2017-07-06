@@ -13,7 +13,6 @@
   "license": "MIT",
   "dependencies": {
     "kanye": "~3.0.2",
-    "dom-selection": "~0.3.3"
   },
   "ignore": [
     "**/.*",

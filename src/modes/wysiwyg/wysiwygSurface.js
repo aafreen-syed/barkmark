@@ -34,7 +34,9 @@ WysiwygSurface.prototype.writeSelection = function (state) {
 
   walk(this.editable.firstChild, peek);
   this.editable.focus();
-  DOMSelection.setRange(p);
+  var selection = doc.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(p);
 
   function peek (context, el) {
     var cursor = unescapeText(context.text).length;
@@ -56,7 +58,7 @@ WysiwygSurface.prototype.writeSelection = function (state) {
 };
 
 WysiwygSurface.prototype.readSelection = function (state) {
-  var sel = DOMSelection.getRange();
+  var sel = doc.getSelection();
   var distance = walk(this.editable.firstChild, peek);
   var start = distance.start || 0;
   var end = distance.end || 0;
