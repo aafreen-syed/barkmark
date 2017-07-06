@@ -137,9 +137,13 @@ function Editor (textarea, options) {
       if (o.wysiwyg) { self.shortcuts.add('p', wysiwygMode); }
     }
     classes[ar](parent, 'wk-container');
+    if(remove) {
+      parent[mov](self.components.commands);
+    } else {
+      parent.insertBefore(self.components.commands, self.textarea);
+    }
     parent[mov](self.components.editable);
     if (self.placeholder) { parent[mov](self.placeholder); }
-    parent[mov](self.components.commands);
     parent[mov](self.components.switchboard);
     // TODO
     // if (self.options.images || self.options.attachments) {
