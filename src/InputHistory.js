@@ -9,8 +9,7 @@ function InputHistory (surface, mode) {
   state.surface = surface;
   state.reset();
 
-  listen(surface.textarea);
-  listen(surface.editable);
+  listen(surface.current());
 
   function listen (el) {
     var pasteHandler = selfie(handlePaste);
