@@ -1,6 +1,6 @@
 'use strict';
 
-var bureaucracy = require('bureaucracy');
+// var bureaucracy = require('bureaucracy');
 var render = require('./render');
 var classes = require('../classes');
 var strings = require('../strings');
@@ -106,7 +106,7 @@ function prompt (options, done) {
     domup.area.addEventListener('dragover', handleDragOver, false);
     domup.area.addEventListener('drop', handleFileSelect, false);
     classify(domup, options.classes.prompts);
-
+/*
     var bureaucrat = bureaucracy.setup(domup.fileinput, {
       method: upload.method,
       formData: upload.formData,
@@ -146,7 +146,7 @@ function prompt (options, done) {
       function toDefinition (result) {
         return result.href + ' "' + result.title + '"';
       }
-    }
+    } */
   }
 
   function handleDragOver (e) {
