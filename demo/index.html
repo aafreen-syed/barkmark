@@ -1,18 +1,16 @@
 <!doctype html>
 <html>
-	<head>
-		<link href='dist/barkmark.css' rel='stylesheet' type='text/css' />
-		<link href='example/example.css' rel='stylesheet' type='text/css' />
-		<link href='example/highlights.css' rel='stylesheet' type='text/css' />
-		<title>barkmark</title>
-	</head>
-	<body>
-		<h1>barkmark</h1>
-		<p>A modular, and progressive Markdown editor. Originally based off of the <a href="https://github.com/bevacqua/woofmark">woofmark editor</a></p>
-		<div class='parent'>
-			<label for='ta'>Create your website in the area below: </label>
-			<div>
-				<textarea id='ta' autofocus># Markdown?
+  <head>
+    <link href='../dist/barkmark.css' rel='stylesheet' type='text/css' />
+    <link href='example.css' rel='stylesheet' type='text/css' />
+    <link href='highlights.css' rel='stylesheet' type='text/css' />
+    <title>barkmark</title>
+  </head>
+  <body>
+    <h1>barkmark</h1>
+    <p>A modular, and progressive Markdown editor. Originally based off of the <a href="https://github.com/bevacqua/woofmark">woofmark editor</a></p>
+    <div class='parent'>
+      <textarea id='ta' autofocus># Markdown?
 
 Here's a teensie bit of [Markdown][1] to get you started.
 
@@ -38,11 +36,10 @@ function code (<mark>here, are, some, args</mark>) {
 
 [1]: http://daringfireball.net/projects/markdown/ "Original introduction to Markdown"
 [2]: http://ponyfoo.com</textarea>
-			</div>
-		</div>
-		<h3>Get it on GitHub! <a href='https://github.com/BlinkUX/barkmark'>BlinkUX/barkmark</a></h3>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.0/to-markdown.min.js'></script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.3.1/markdown-it.min.js'></script>
-		<script src='dist/example.js'></script>
-	</body>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.0/to-markdown.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.3.1/markdown-it.min.js'></script>
+    <script src='../dist/barkmark.js'></script>
+    <script src='example.js'></script>
+  </body>
 </html>

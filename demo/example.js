@@ -3,8 +3,10 @@
 var md = markdownit();
 var rimage = /^image\/(gif|png|p?jpe?g)$/i;
 
-woofmark(document.querySelector('#ta'), {
-  parseMarkdown: md,
+barkmark(document.querySelector('#ta'), {
+  parseMarkdown: function (value, options) {
+    return md.render(value);
+  },
   parseHTML: parseHTML,
   fencing: true,
   defaultMode: 'wysiwyg',
