@@ -254,11 +254,11 @@ Editor.prototype.setMode = function (goToMode, e) {
 
   this.textarea.blur(); // avert chrome repaint bugs
 
-  var value;
+  var value = this.getSurface().read();
   if (goToMode === 'markdown') {
-    value = parse('parseHTML', this.getSurface()).trim();
+    value = parse('parseHTML', value).trim();
   } else if (goToMode === 'wysiwyg') {
-    value = parse('parseMarkdown', this.textarea.value).replace(rparagraph, '').trim();
+    value = parse('parseMarkdown', value).replace(rparagraph, '').trim();
   }
   nextMode.surface.write(value);
 
