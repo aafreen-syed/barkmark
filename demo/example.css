@@ -42,12 +42,17 @@ img {
   max-width: 100%;
 }
 
+pre {
+  background-color: #EFEFEF;
+  padding: 5px;
+}
+
 pre code {
   font-size: 18px;
 }
 
 blockquote {
-  border-left: 5px solid #fff;
+  border-left: 5px solid #E88139;
   margin: 10px 0;
   padding: 0 15px;
 }
@@ -124,17 +129,34 @@ kbd {
 }
 
 .wk-container {
-  background-color: #C0C0C0;
+  padding: 0px;
+  border: 1px solid #EFEFEF;
+  overflow: hidden;
 }
 
 .wk-wysiwyg {
   background-color: #FFFFFF;
-  outline: none;
+  padding: 10px;
 }
 
 .wk-commands,
 .wk-switchboard {
-  display: inline-block;
+  display: block;
+  background-color: #F4F4F4;
+}
+
+.wk-commands {
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.wk-switchboard {
+  text-align: right;
+  border-top: 1px solid #EFEFEF;
+}
+
+.wk-commands button,
+.wk-switchboard button {
+  vertical-align: bottom;
 }
 
 .wk-mode-active {
