@@ -2,18 +2,19 @@
 
 var InputState = require('./InputState');
 
-function getCommandHandler (surface, history, fn) {
+function getCommandHandler (editor, history, fn) {
   return function handleCommand (e) {
-    surface.focus(history.inputMode);
+    var surface = editor.getSurface();
+    surface.focus(true);
     history.setCommandMode();
 
-    var state = new InputState(surface, history.inputMode);
+    var state = new InputState(surface, editor.mode);
     var chunks = state.getChunks();
     var asyncHandler = {
       async: async, immediate: true
     };
 
-    fn.call(asyncHandler, e, history.inputMode, chunks);
+    fn.call(asyncHandler, e, editor.mode, chunks);
 
     if (asyncHandler.immediate) {
       done();
@@ -25,7 +26,7 @@ function getCommandHandler (surface, history, fn) {
     }
 
     function done () {
-      surface.focus(history.inputMode);
+      surface.focus();
       state.setChunks(chunks);
       state.restore();
     }

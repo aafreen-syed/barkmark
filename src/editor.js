@@ -3,10 +3,10 @@
 var utils = require('./utils');
 // var uploads = require('./uploads');
 var strings = require('./strings');
-// var bindCommands = require('./bindCommands'); // TODO
+var bindCommands = require('./bindCommands');
 var InputHistory = require('./InputHistory');
 var ShortcutManager = require('./shortcuts');
-// var getCommandHandler = require('./getCommandHandler'); // TODO
+var getCommandHandler = require('./getCommandHandler');
 var TextSurface = require('./modes/markdown/textareaSurface');
 var WysiwygSurface = require('./modes/wysiwyg/wysiwygSurface');
 var classes = require('./classes');
@@ -107,7 +107,7 @@ function Editor (textarea, options) {
     this.modes.wysiwyg.set();
   }
 
-  // bindCommands(surface, o, editor);
+  bindCommands(this, o);
   bindEvents();
 
   function addMode (id) {
@@ -162,11 +162,7 @@ Editor.prototype.addCommand = function (key, shift, fn) {
     shift = undefined;
   }
 
-  this.commands.push({
-    key: key,
-    shift: !!shift,
-    callback: fn,
-  });
+  this.shortcuts.add(key, shift, getCommandHandler(this, this.modes[this.mode].history, fn));
 };
 
 Editor.prototype.addCommandButton = function (id, key, shift, fn) {
@@ -187,9 +183,9 @@ Editor.prototype.addCommandButton = function (id, key, shift, fn) {
     button.setAttribute('title', mac ? macify(title) : title);
   }
   button.type = 'button';
+  button.tabIndex = -1;
   render(button, id);
-  // TODO
-  // button.addEventListener('click', getCommandHandler(surface, history, fn));
+  button.addEventListener('click', getCommandHandler(this, this.modes[this.mode].history, fn));
   if (key) {
     this.addCommand(key, shift, fn);
   }
@@ -197,9 +193,8 @@ Editor.prototype.addCommandButton = function (id, key, shift, fn) {
 };
 
 Editor.prototype.runCommand = function (fn) {
-  // TODO
-  // getCommandHandler(surface, history, rearrange)(null);
-  rearrange();
+  getCommandHandler(this, this.modes[this.mode].history, rearrange)(null);
+
   function rearrange (e, mode, chunks) {
     return fn.call(this, chunks, mode);
   }

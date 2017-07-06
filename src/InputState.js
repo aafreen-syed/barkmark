@@ -46,8 +46,8 @@ InputState.prototype.select = function () {
 InputState.prototype.restore = function () {
   var self = this;
   var el = self.surface.current(self.mode);
-  if (typeof self.text === 'string' && self.text !== self.surface.read(self.mode)) {
-    self.surface.write(self.mode, self.text);
+  if (typeof self.text === 'string' && self.text !== self.surface.read()) {
+    self.surface.write(self.text);
   }
   self.select();
   el.scrollTop = self.scrollTop;

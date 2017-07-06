@@ -8,8 +8,12 @@ function WysiwygSurface (editable) {
   this.editable = editable;
 }
 
-WysiwygSurface.prototype.focus = function () {
-  setTimeout(this.editable.focus.bind(this.editable), 0);
+WysiwygSurface.prototype.focus = function (forceImmediate) {
+  if(forceImmediate) {
+    this.editable.focus();
+  } else {
+    setTimeout(this.editable.focus.bind(this.editable), 0);
+  }
 };
 
 WysiwygSurface.prototype.read = function () {
