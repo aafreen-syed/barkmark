@@ -5,6 +5,7 @@ var utils = require('./utils');
 var strings = require('./strings');
 // var bindCommands = require('./bindCommands'); // TODO
 var InputHistory = require('./InputHistory');
+var ShortcutManager = require('./shortcuts');
 // var getCommandHandler = require('./getCommandHandler'); // TODO
 var TextSurface = require('./modes/markdown/textareaSurface');
 var WysiwygSurface = require('./modes/wysiwyg/wysiwygSurface');
@@ -82,7 +83,9 @@ function Editor (textarea, options) {
   this.modes.markdown.history = new InputHistory(this.modes.markdown.surface, 'markdown');
   this.mode = 'markdown';
 
-  this.commands = [];
+  this.shortcuts = new ShortcutManager();
+  this.shortcuts.attach(this.modes.wysiwyg.element);
+  this.shortcuts.attach(this.modes.markdown.element);
 
   tag({ t: 'span', c: 'wk-drop-text', x: strings.prompts.drop, p: this.components.droparea });
   tag({ t: 'p', c: ['wk-drop-icon'].concat(o.classes.dropicon).join(' '), p: this.components.droparea });
@@ -127,18 +130,18 @@ function Editor (textarea, options) {
   function bindEvents (remove) {
     var ar = remove ? 'rm' : 'add';
     var mov = remove ? 'removeChild' : 'appendChild';
-    // TODO
-    // if (remove) {
-      // kanye.clear(kanyeContext);
-    // } else {
-      // if (o.markdown) { kanye.on('cmd+m', kanyeOptions, markdownMode); }
-      // if (o.wysiwyg) { kanye.on('cmd+p', kanyeOptions, wysiwygMode); }
-    // }
+    if (remove) {
+      self.shortcuts.clear();
+    } else {
+      if (o.markdown) { self.shortcuts.add('m', markdownMode); }
+      if (o.wysiwyg) { self.shortcuts.add('p', wysiwygMode); }
+    }
     classes[ar](parent, 'wk-container');
     parent[mov](self.components.editable);
     if (self.placeholder) { parent[mov](self.placeholder); }
     parent[mov](self.components.commands);
     parent[mov](self.components.switchboard);
+    // TODO
     // if (self.options.images || self.options.attachments) {
       // parent[mov](self.components.droparea);
       // uploads(parent, self.components.droparea, self, o, remove);
@@ -164,7 +167,6 @@ Editor.prototype.addCommand = function (key, shift, fn) {
     shift: !!shift,
     callback: fn,
   });
-  // kanye.on(combo, kanyeOptions, getCommandHandler(surface, history, fn));
 };
 
 Editor.prototype.addCommandButton = function (id, key, shift, fn) {

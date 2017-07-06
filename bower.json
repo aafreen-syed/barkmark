@@ -11,9 +11,7 @@
     "Andrew Hushbeck <andrew@blinkux.com"
   ],
   "license": "MIT",
-  "dependencies": {
-    "kanye": "~3.0.2",
-  },
+  "dependencies": {},
   "ignore": [
     "**/.*",
     "node_modules",
