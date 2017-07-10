@@ -222,6 +222,7 @@ Editor.prototype.destroy = function () {
 
 Editor.prototype.value = function getOrSetValue (input) {
   var markdown = String(input);
+  var self = this;
 
   var sets = arguments.length === 1;
   if (sets) {
@@ -229,13 +230,13 @@ Editor.prototype.value = function getOrSetValue (input) {
       markdown = asHtml();
     }
     this.getSurface().write(markdown);
-    history.reset();
+    this.modes[this.mode].history.reset();
   }
 
   return this.getMarkdown();
 
   function asHtml () {
-    return this.options.parseMarkdown(markdown);
+    return self.options.parseMarkdown(markdown);
   }
 };
 
