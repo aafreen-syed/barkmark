@@ -1,6 +1,6 @@
 'use strict';
 
-var crossvent = require('crossvent');
+var utils = require('./utils');
 var commands = {
   markdown: {
     boldOrItalic: require('./markdown/boldOrItalic'),
@@ -24,26 +24,26 @@ var commands = {
 
 commands.wysiwyg = commands.html;
 
-function bindCommands (surface, options, editor) {
-  bind('bold', 'cmd+b', bold);
-  bind('italic', 'cmd+i', italic);
-  bind('quote', 'cmd+j', router('blockquote'));
-  bind('code', 'cmd+e', code);
-  bind('ol', 'cmd+o', ol);
-  bind('ul', 'cmd+u', ul);
-  bind('heading', 'cmd+d', router('heading'));
-  editor.showLinkDialog = fabricator(bind('link', 'cmd+k', linkOrImageOrAttachment('link')));
-  editor.showImageDialog = fabricator(bind('image', 'cmd+g', linkOrImageOrAttachment('image')));
+function bindCommands (editor, options) {
+  bind('bold', 'b', bold);
+  bind('italic', 'i', italic);
+  bind('quote', 'j', router('blockquote'));
+  bind('code', 'e', code);
+  bind('ol', 'o', ol);
+  bind('ul', 'u', ul);
+  bind('heading', 'd', router('heading'));
+  editor.showLinkDialog = fabricator(bind('link', 'k', linkOrImageOrAttachment('link')));
+  editor.showImageDialog = fabricator(bind('image', 'g', linkOrImageOrAttachment('image')));
   editor.linkOrImageOrAttachment = linkOrImageOrAttachment;
 
   if (options.attachments) {
-    editor.showAttachmentDialog = fabricator(bind('attachment', 'cmd+shift+k', linkOrImageOrAttachment('attachment')));
+    editor.showAttachmentDialog = fabricator(bind('attachment', 'k', true, linkOrImageOrAttachment('attachment')));
   }
   if (options.hr) { bind('hr', 'cmd+n', router('hr')); }
 
   function fabricator (el) {
     return function open () {
-      crossvent.fabricate(el, 'click');
+      utils.dispatchClickEvent(el);
     };
   }
   function bold (mode, chunks) {
@@ -67,7 +67,6 @@ function bindCommands (surface, options, editor) {
         editor: editor,
         mode: mode,
         type: type,
-        surface: surface,
         prompts: options.prompts,
         upload: options[type + 's'],
         classes: options.classes,
@@ -76,8 +75,13 @@ function bindCommands (surface, options, editor) {
       });
     };
   }
-  function bind (id, combo, fn) {
-    return editor.addCommandButton(id, combo, suppress(fn));
+  function bind (id, key, shift, fn) {
+    if(arguments.length === 3) {
+      fn = shift;
+      shift = undefined;
+    }
+
+    return editor.addCommandButton(id, key, shift, suppress(fn));
   }
   function router (method) {
     return function routed (mode, chunks) { commands[mode][method].call(this, chunks); };

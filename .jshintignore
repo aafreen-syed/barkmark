@@ -1,5 +1,7 @@
 node_modules
 bower_components
 dist
-example
+demo
 ponymark
+karma.conf.js
+test

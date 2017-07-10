@@ -1,8 +1,5 @@
 'use strict';
 
-var crossvent = require('crossvent');
-var getText = require('../getText');
-var setText = require('../setText');
 var classes = require('../classes');
 var strings = require('../strings');
 var ac = 'appendChild';
@@ -12,7 +9,7 @@ function e (type, cls, text) {
   var el = doc.createElement(type);
   el.className = cls;
   if (text) {
-    setText(el, text);
+    el.textContent = text;
   }
   return el;
 }
@@ -78,9 +75,9 @@ function uploads (dom, warning) {
   dom.section[ac](domup.upload);
   dom.section[ac](domup.dragdrop);
   dom.section[ac](domup.area);
-  setText(dom.desc, getText(dom.desc) + strings.prompts.upload);
-  crossvent.add(domup.fileinput, 'focus', focusedFileInput);
-  crossvent.add(domup.fileinput, 'blur', blurredFileInput);
+  dom.desc.textContent = dom.desc.textContent + strings.prompts.upload;
+  domup.fileinput.addEventListener('focus', focusedFileInput);
+  domup.fileinput.addEventListener('blur', blurredFileInput);
 
   function focusedFileInput () {
     classes.add(domup.upload, 'wk-focused');

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <link href='../dist/barkmark.css' rel='stylesheet' type='text/css' />
+    <link href='example.css' rel='stylesheet' type='text/css' />
+    <link href='highlights.css' rel='stylesheet' type='text/css' />
+    <title>barkmark</title>
+  </head>
+  <body>
+    <header>
+      <h1>barkmark</h1>
+      <p>A modular, progressive Markdown editor. Originally based off of the <a href="https://github.com/bevacqua/woofmark">woofmark editor</a></p>
+    </header>
+    <div class='parent'>
+      <textarea id='ta' autofocus># Markdown?
+
+Here's a teensie bit of [Markdown][1] to get you started.
+
+Markdown lets you produce **rich** HTML-formatted text by writing _plain text_. You can write `code`, text in _italics_ or give them **a "bolder" format**. You can create headings by prefixing them with one or more hash characters _(#)_. The _less hashes_ they have, the _more prominent_ your headings become.
+
+Creating **links** is merely a matter of [wrapping some text in brackets][2] and referencing a resource locator, like the ones you'll find at the bottom of this text. Images can be embedded just the same, except you'll have to prefix the wrapped text with _an exclamation mark_.
+
+> Don't forget your towel!
+>
+> -- Arthur Dent
+
+Note that,
+
+```js
+var markTags = 'still work';
+var within = true;
+
+function code (here, are, some, args) {
+  // do wonderful things!
+  return here * are - some + args;
+}
+```
+
+[1]: http://daringfireball.net/projects/markdown/ "Original introduction to Markdown"
+[2]: http://ponyfoo.com</textarea>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/to-markdown/3.1.0/to-markdown.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.3.1/markdown-it.min.js'></script>
+    <script src='../dist/barkmark.js'></script>
+    <script src='example.js'></script>
+  </body>
+</html>

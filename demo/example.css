@@ -1,0 +1,180 @@
+body {
+  background-color: #FFFFFF;
+  margin: 0 auto;
+  max-width: 46em;
+  color: #101010;
+}
+
+html, body {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+body, input, button {
+  font-family: Georgia, Helvetica;
+  font-size: 17px;
+}
+
+header h1 {
+  margin: 20px 0px 0px;
+}
+
+header p {
+  margin: 0px;
+  padding: 0px 15px;
+}
+
+h3 {
+  padding: 10px;
+  text-align: center;
+  line-height: 36px;
+}
+
+h3 b {
+  font-size: 27px;
+  color: #2F2F2F;
+}
+
+img {
+  max-width: 100%;
+}
+
+pre {
+  background-color: #EFEFEF;
+  padding: 5px;
+}
+
+pre code {
+  font-size: 18px;
+}
+
+blockquote {
+  border-left: 5px solid #E88139;
+  margin: 10px 0;
+  padding: 0 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+sub {
+  display: block;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  font-size: 11px;
+  font-style: italic;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+input,
+textarea {
+  border: none;
+  outline: none;
+  padding: 10px;
+  color: #2F2F2F;
+  border: 0;
+  display: block;
+  width: 100%;
+}
+
+textarea {
+  min-height: 350px;
+  font-size: 14px;
+}
+
+button {
+  background-color: #ecf0f1;
+  color: #8e44ad;
+  border: 0;
+  padding: 18px 12px;
+  cursor: pointer;
+  outline: none;
+  height: 55px;
+}
+
+button:hover {
+  background-color: #8e44ad;
+  color: #ecf0f1;
+}
+
+kbd {
+  display: inline-block;
+  border: 1px solid #ccc;
+  margin: -2px 0.1em 0;
+  padding: 0.1em 0.6em;
+  line-height: 1.4;
+  font-size: 11px;
+  background-color: #f8f8f8;
+  box-shadow: 0 1px 0 #bbb, 0 0 0 2px #fff inset;
+  border-radius: 3px;
+  color: #555;
+  text-shadow: 0 1px 0 #fff;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.parent {
+  background-color: #FFFFFF;
+  margin: 50px 0;
+  padding: 20px;
+}
+
+.wk-container {
+  padding: 0px;
+  border: 1px solid #EFEFEF;
+  overflow: hidden;
+}
+
+.wk-wysiwyg {
+  background-color: #FFFFFF;
+  padding: 10px;
+}
+
+.wk-commands,
+.wk-switchboard {
+  display: block;
+  background-color: #F4F4F4;
+}
+
+.wk-commands {
+  border-bottom: 1px solid #EFEFEF;
+}
+
+.wk-switchboard {
+  text-align: right;
+  border-top: 1px solid #EFEFEF;
+}
+
+.wk-commands button,
+.wk-switchboard button {
+  vertical-align: bottom;
+}
+
+.wk-mode-active {
+  background-color: #ece0f1;
+}
+
+.gh-fork {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border: 0;
+  z-index: 1;
+}
+
+#ta {
+  font-family: Consolas, monaco, monospace;
+}

@@ -1,6 +1,5 @@
 'use strict';
 
-var crossvent = require('crossvent');
 var InputState = require('./InputState');
 
 function InputHistory (surface, mode) {
@@ -10,15 +9,14 @@ function InputHistory (surface, mode) {
   state.surface = surface;
   state.reset();
 
-  listen(surface.textarea);
-  listen(surface.editable);
+  listen(surface.current());
 
   function listen (el) {
     var pasteHandler = selfie(handlePaste);
-    crossvent.add(el, 'keypress', preventCtrlYZ);
-    crossvent.add(el, 'keydown', selfie(handleCtrlYZ));
-    crossvent.add(el, 'keydown', selfie(handleModeChange));
-    crossvent.add(el, 'mousedown', setMoving);
+    el.addEventListener('keypress', preventCtrlYZ);
+    el.addEventListener('keydown', selfie(handleCtrlYZ));
+    el.addEventListener('keydown', selfie(handleModeChange));
+    el.addEventListener('mousedown', setMoving);
     el.onpaste = pasteHandler;
     el.ondrop = pasteHandler;
   }
