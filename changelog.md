@@ -1,6 +1,10 @@
 # Changes
 
-## v1.0.0
+## v0.4.1
+
+ * Fixed issue setting Editor value
+
+## v0.4.0
 
  * Added `modes` strings to the `barkmark.strings` object
  * Forked new library from [woofmark v4.2.3][1] to create barkmark
