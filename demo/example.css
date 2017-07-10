@@ -22,9 +22,13 @@ body, input, button {
   font-size: 17px;
 }
 
-h1 {
-  margin-top: 20px;
-  padding: 10px 0;
+header h1 {
+  margin: 20px 0px 0px;
+}
+
+header p {
+  margin: 0px;
+  padding: 0px 15px;
 }
 
 h3 {
