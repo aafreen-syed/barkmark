@@ -59,6 +59,7 @@ function Editor (textarea, options) {
 
   this.components = {
     textarea: textarea,
+    parent: textarea.parentNode,
     droparea: tag({ c: 'wk-container-drop' }),
     switchboard: tag({ c: 'wk-switchboard' }),
     commands: tag({ c: 'wk-commands' }),
@@ -217,7 +218,33 @@ Editor.prototype.destroy = function () {
     this.textarea.value = this.getMarkdown();
   }
   classes.rm(this.textarea, 'wk-hide');
-  // bindEvents(true); // TODO
+
+  this.shortcuts.clear();
+
+  var parent = this.components.parent;
+  classes.rm(parent, 'wk-container');
+
+  // Remove components
+  parent.removeChild(this.components.commands);
+  if (this.placeholder) { parent.removeChild(this.placeholder); }
+  parent.removeChild(this.components.switchboard);
+
+  // Remove all modes that aren't using the textarea
+  var modes = Object.keys(this.modes);
+  var self = this;
+  modes.forEach(function (mode) {
+    if(self.modes[mode].element !== self.textarea) {
+      parent.removeChild(self.modes[mode].element);
+    }
+    // TODO Detach change event listeners for surface elements
+    this.shortcuts.detach(self.modes[mode].element);
+  });
+
+  // TODO
+  // if (this.options.images || this.options.attachments) {
+    // parent.removeChild(this.components.droparea);
+    // uploads(parent, this.components.droparea, this, o, remove);
+  // }
 };
 
 Editor.prototype.value = function getOrSetValue (input) {
