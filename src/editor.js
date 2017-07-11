@@ -15,7 +15,6 @@ var prompt = require('./prompts/prompt');
 var closePrompts = require('./prompts/close');
 var mac = /\bMac OS\b/.test(global.navigator.userAgent);
 var doc = document;
-var rparagraph = /^<p><\/p>\n?$/i;
 
 function Editor (textarea, options) {
   this.textarea = textarea;
@@ -274,17 +273,9 @@ Editor.prototype.setMode = function (goToMode, e) {
 
   this.textarea.blur(); // avert chrome repaint bugs
 
-  // TODO ///////////
-  // Propagate changes from the nextMode to all other modes
-
-
-  var value = this.getSurface().read();
-  if (goToMode === 'markdown') {
-    value = parse('parseHTML', value).trim();
-  } else if (goToMode === 'wysiwyg') {
-    value = parse('parseMarkdown', value).replace(rparagraph, '').trim();
-  }
-  nextMode.surface.write(value);
+  currentMode.surface.off('change', stashChanges);
+  nextMode.surface.writeMarkdown(currentMode.surface.toMarkdown());
+  nextMode.surface.on('change', stashChanges);
 
   classes.add(currentMode.element, 'wk-hide');
   classes.rm(nextMode.element, 'wk-hide');
@@ -314,26 +305,17 @@ Editor.prototype.setMode = function (goToMode, e) {
   // this.history.setInputMode(goToMode);
   fireLater.call(this, 'barkmark-mode-change');
 
-  function parse (method, input) {
-    return self.options[method](input);
+  function stashChanges () {
+    if(nextMode.element !== self.textarea) {
+      self.textarea.value = nextMode.surface.toMarkdown();
+      utils.dispatchBrowserEvent(self.textarea, 'input');
+      utils.dispatchBrowserEvent(self.textarea, 'change');
+    }
   }
-
-  // function propagateChanges (e, newValue) {
-    // for(var mode in self.modes) {
-      // if(!self.modes.hasOwnProperty(mode) || this === nextMode.surface) {
-        // continue;
-      // }
-
-
-    // }
-  // }
 };
 
 Editor.prototype.getMarkdown = function () {
-  if (this.mode === 'wysiwyg') {
-    return this.options.parseHTML(this.modes.wysiwyg.element);
-  }
-  return this.textarea.value;
+  return this.getSurface().toMarkdown();
 };
 
 /*
