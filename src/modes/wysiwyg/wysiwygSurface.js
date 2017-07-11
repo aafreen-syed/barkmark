@@ -1,11 +1,34 @@
 'use strict';
 
+var Events = require('../../events');
+var utils = require('../../utils');
+
 var doc = global.document;
 var ropen = /^(<[^>]+(?: [^>]*)?>)/;
 var rclose = /(<\/[^>]+>)$/;
 
 function WysiwygSurface (editable) {
   this.editable = editable;
+
+  var self = this;
+  var _cached = this.read();
+  var debouncedChange = utils.debounce(sendChange, 200);
+
+  editable.addEventListener('blur', sendChange);
+  editable.addEventListener('cut', sendChange);
+  editable.addEventListener('paste', sendChange);
+  editable.addEventListener('textinput', debouncedChange);
+  editable.addEventListener('input', debouncedChange);
+  editable.addEventListener('keypress', debouncedChange);
+  editable.addEventListener('keyup', debouncedChange);
+
+  function sendChange () {
+    var updated = self.read();
+    if(_cached !== updated) {
+      _cached = updated;
+      self.trigger('change', updated);
+    }
+  }
 }
 
 WysiwygSurface.prototype.focus = function (forceImmediate) {
@@ -153,5 +176,7 @@ function unescapeText (el) {
   toText.textContent = el;
   return toText.textContent;
 }
+
+Events.extend(WysiwygSurface);
 
 module.exports = WysiwygSurface;

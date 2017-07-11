@@ -1,7 +1,29 @@
 'use strict';
 
+var Events = require('../../events');
+var utils = require('../../utils');
+
 function TextSurface (textarea) {
   this.textarea = textarea;
+
+  var self = this;
+  var _cached = this.read();
+  var debouncedChange = utils.debounce(sendChange, 100);
+
+  textarea.addEventListener('blur', sendChange);
+  textarea.addEventListener('cut', sendChange);
+  textarea.addEventListener('paste', sendChange);
+  textarea.addEventListener('change', debouncedChange);
+  textarea.addEventListener('input', debouncedChange);
+  textarea.addEventListener('keypress', debouncedChange);
+
+  function sendChange () {
+    var updated = self.read();
+    if(_cached !== updated) {
+      _cached = updated;
+      self.trigger('change', updated);
+    }
+  }
 }
 
 TextSurface.prototype.focus = function () {
@@ -31,5 +53,7 @@ TextSurface.prototype.readSelection = function (state) {
   state.start = this.textarea.selectionStart;
   state.end = this.textarea.selectionEnd;
 };
+
+Events.extend(TextSurface);
 
 module.exports = TextSurface;
