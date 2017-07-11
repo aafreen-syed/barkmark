@@ -115,6 +115,11 @@ exports.dispatchCustomEvent = function (element, event, params) {
   element.dispatchEvent(ev);
 };
 
+exports.dispatchBrowserEvent = function (element, event) {
+  var ev = new Event(event);
+  element.dispatchEvent(ev);
+};
+
 exports.dispatchClickEvent = function (element) {
   var ev = new MouseEvent('click');
   element.dispatchEvent(ev);
