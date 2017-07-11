@@ -119,3 +119,17 @@ exports.dispatchClickEvent = function (element) {
   var ev = new MouseEvent('click');
   element.dispatchEvent(ev);
 };
+
+exports.debounce = function (cb, ms) {
+  var tmr;
+  return function () {
+    var self = this,
+      args = Array.prototype.slice.call(arguments);
+
+    clearTimeout(tmr);
+    tmr = setTimeout(function () {
+      tmr = undefined;
+      cb.apply(self, args);
+    }, ms);
+  };
+};
