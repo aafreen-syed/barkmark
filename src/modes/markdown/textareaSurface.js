@@ -54,6 +54,17 @@ TextSurface.prototype.readSelection = function (state) {
   state.end = this.textarea.selectionEnd;
 };
 
+TextSurface.prototype.toMarkdown = function () {
+  return this.read();
+};
+
+TextSurface.prototype.writeMarkdown = function (markdown) {
+  return this.write((markdown || '').trim());
+};
+
+TextSurface.prototype.toHTML = function () {
+  return this.editor.parseMarkdown(this.read());
+};
 Events.extend(TextSurface);
 
 module.exports = TextSurface;

@@ -6,8 +6,10 @@ var utils = require('../../utils');
 var doc = global.document;
 var ropen = /^(<[^>]+(?: [^>]*)?>)/;
 var rclose = /(<\/[^>]+>)$/;
+var rparagraph = /^<p><\/p>\n?$/i;
 
 function WysiwygSurface (editor, options) {
+  this.editor = editor;
   var editable = this.editable = doc.createElement('div');
   editable.className = ['wk-wysiwyg', 'wk-hide'].concat(options.classes).join(' ');
   editable.contentEditable = true;
@@ -112,6 +114,21 @@ WysiwygSurface.prototype.readSelection = function (state) {
       context.end = context.text.length + escapeNodeText(elText.substring(0, sel.focusOffset)).length;
     }
   }
+};
+
+WysiwygSurface.prototype.toMarkdown = function () {
+  return this.editor.parseHTML(this.read());
+};
+
+WysiwygSurface.prototype.writeMarkdown = function (markdown) {
+  var html = this.editor.parseMarkdown(markdown || '')
+    .replace(rparagraph, '') // Remove empty <p> tags
+    .trim();
+  return this.write(html);
+};
+
+WysiwygSurface.prototype.toHTML = function () {
+  return this.read();
 };
 
 function walk (el, peek, ctx, siblings) {
