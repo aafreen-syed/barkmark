@@ -1,5 +1,10 @@
 # Changes
 
+## v0.4.2
+
+ * Fix issue with text area not updating with content from wysiwyg mode as edits are made
+ * Fix issue where `editor.destroy` would not properly clean up elements. Note there are still some leftover listeners, tracked through issue #10
+
 ## v0.4.1
 
  * Fixed issue setting Editor value
