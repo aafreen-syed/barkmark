@@ -7,8 +7,10 @@ var doc = global.document;
 var ropen = /^(<[^>]+(?: [^>]*)?>)/;
 var rclose = /(<\/[^>]+>)$/;
 
-function WysiwygSurface (editable) {
-  this.editable = editable;
+function WysiwygSurface (editor, options) {
+  var editable = this.editable = doc.createElement('div');
+  editable.className = ['wk-wysiwyg', 'wk-hide'].concat(options.classes).join(' ');
+  editable.contentEditable = true;
 
   var self = this;
   var _cached = this.read();

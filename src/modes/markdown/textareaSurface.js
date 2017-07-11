@@ -3,8 +3,8 @@
 var Events = require('../../events');
 var utils = require('../../utils');
 
-function TextSurface (textarea) {
-  this.textarea = textarea;
+function TextSurface (editor) {
+  var textarea = this.textarea = editor.textarea;
 
   var self = this;
   var _cached = this.read();
