@@ -13,13 +13,10 @@ var classes = require('./classes');
 var renderers = require('./renderers');
 var prompt = require('./prompts/prompt');
 var closePrompts = require('./prompts/close');
-var modeNames = ['markdown', 'wysiwyg'];
 var mac = /\bMac OS\b/.test(global.navigator.userAgent);
 var doc = document;
-var rparagraph = /^<p><\/p>\n?$/i;
 
 function Editor (textarea, options) {
-  var self = this;
   this.textarea = textarea;
   var parent = textarea.parentNode;
   var o = this.options = utils.defaultsDeep(options || {}, {
@@ -59,101 +56,48 @@ function Editor (textarea, options) {
 
   this.components = {
     textarea: textarea,
+    parent: textarea.parentNode,
     droparea: tag({ c: 'wk-container-drop' }),
     switchboard: tag({ c: 'wk-switchboard' }),
     commands: tag({ c: 'wk-commands' }),
-    editable: tag({ c: ['wk-wysiwyg', 'wk-hide'].concat(o.classes.wysiwyg).join(' ') }),
   };
-
-  this.modes = {
-    wysiwyg: {
-      element: this.components.editable,
-      button: tag({ t: 'button', c: 'wk-mode wk-mode-inactive' }),
-      surface: new WysiwygSurface(this.components.editable),
-      set: wysiwygMode
-    },
-    markdown: {
-      element: textarea,
-      button: tag({ t: 'button', c: 'wk-mode wk-mode-active' }),
-      surface: new TextSurface(textarea),
-      set: markdownMode
-    },
-  };
-  this.modes.wysiwyg.history = new InputHistory(this.modes.wysiwyg.surface, 'wysiwyg');
-  this.modes.markdown.history = new InputHistory(this.modes.markdown.surface, 'markdown');
-  this.mode = 'markdown';
 
   this.shortcuts = new ShortcutManager();
-  this.shortcuts.attach(this.modes.wysiwyg.element);
-  this.shortcuts.attach(this.modes.markdown.element);
+  this.modes = {};
+  this.mode = 'markdown'; // While initializing we are always showing the textarea "markdown" view
 
   tag({ t: 'span', c: 'wk-drop-text', x: strings.prompts.drop, p: this.components.droparea });
   tag({ t: 'p', c: ['wk-drop-icon'].concat(o.classes.dropicon).join(' '), p: this.components.droparea });
 
-  this.components.editable.contentEditable = true;
-  this.modes.markdown.button.setAttribute('disabled', 'disabled');
-  modeNames.forEach(addMode);
+  // Attach Components
+  classes.add(parent, 'wk-container');
+  parent.insertBefore(this.components.commands, this.textarea);
+  if (this.placeholder) { parent.appendChild(this.placeholder); }
+  parent.appendChild(this.components.switchboard);
+  // TODO
+  // if (this.options.images || this.options.attachments) {
+    // parent[mov](this.components.droparea);
+    // uploads(parent, this.components.droparea, this, o, remove);
+  // }
 
-  if (o.wysiwyg) {
+  if(o.markdown) {
+    this.registerMode('markdown', TextSurface, {
+      active: (!o.defaultMode || !o[o.defaultMode] || o.defaultMode === 'markdown'),
+      shortcutKey: 'm',
+    });
+  }
+  if(o.wysiwyg) {
+    this.registerMode('wysiwyg', WysiwygSurface, {
+      active: o.defaultMode === 'wysiwyg' || !o.markdown,
+      shortcutKey: 'p',
+      classes: o.classes.wysiwyg || [],
+    });
+
     this.placeholder = tag({ c: 'wk-wysiwyg-placeholder wk-hide', x: textarea.placeholder });
     this.placeholder.addEventListener('click', this.modes.wysiwyg.surface.focus.bind(this.modes.wysiwyg.surface));
   }
 
-  if (o.defaultMode && o[o.defaultMode]) {
-    this.modes[o.defaultMode].set();
-  } else if (o.markdown) {
-    this.modes.markdown.set();
-  } else {
-    this.modes.wysiwyg.set();
-  }
-
   bindCommands(this, o);
-  bindEvents();
-
-  function addMode (id) {
-    var button = self.modes[id].button;
-    var custom = o.render.modes;
-    if (o[id]) {
-      self.components.switchboard.appendChild(button);
-      (typeof custom === 'function' ? custom : renderers.modes)(button, id);
-      button.addEventListener('click', self.modes[id].set);
-      button.type = 'button';
-      button.tabIndex = -1;
-
-      var title = strings.titles[id];
-      if (title) {
-        button.setAttribute('title', mac ? macify(title) : title);
-      }
-    }
-  }
-
-  function bindEvents (remove) {
-    var ar = remove ? 'rm' : 'add';
-    var mov = remove ? 'removeChild' : 'appendChild';
-    if (remove) {
-      self.shortcuts.clear();
-    } else {
-      if (o.markdown) { self.shortcuts.add('m', markdownMode); }
-      if (o.wysiwyg) { self.shortcuts.add('p', wysiwygMode); }
-    }
-    classes[ar](parent, 'wk-container');
-    if(remove) {
-      parent[mov](self.components.commands);
-    } else {
-      parent.insertBefore(self.components.commands, self.textarea);
-    }
-    parent[mov](self.components.editable);
-    if (self.placeholder) { parent[mov](self.placeholder); }
-    parent[mov](self.components.switchboard);
-    // TODO
-    // if (self.options.images || self.options.attachments) {
-      // parent[mov](self.components.droparea);
-      // uploads(parent, self.components.droparea, self, o, remove);
-    // }
-  }
-
-  function markdownMode (e) { self.setMode('markdown', e); }
-  function wysiwygMode (e) { self.setMode('wysiwyg', e); }
 }
 
 Editor.prototype.getSurface = function () {
@@ -217,7 +161,33 @@ Editor.prototype.destroy = function () {
     this.textarea.value = this.getMarkdown();
   }
   classes.rm(this.textarea, 'wk-hide');
-  // bindEvents(true); // TODO
+
+  this.shortcuts.clear();
+
+  var parent = this.components.parent;
+  classes.rm(parent, 'wk-container');
+
+  // Remove components
+  parent.removeChild(this.components.commands);
+  if (this.placeholder) { parent.removeChild(this.placeholder); }
+  parent.removeChild(this.components.switchboard);
+
+  // Remove all modes that aren't using the textarea
+  var modes = Object.keys(this.modes);
+  var self = this;
+  modes.forEach(function (mode) {
+    if(self.modes[mode].element !== self.textarea) {
+      parent.removeChild(self.modes[mode].element);
+    }
+    // TODO Detach change event listeners for surface elements
+    this.shortcuts.detach(self.modes[mode].element);
+  });
+
+  // TODO
+  // if (this.options.images || this.options.attachments) {
+    // parent.removeChild(this.components.droparea);
+    // uploads(parent, this.components.droparea, this, o, remove);
+  // }
 };
 
 Editor.prototype.value = function getOrSetValue (input) {
@@ -240,6 +210,53 @@ Editor.prototype.value = function getOrSetValue (input) {
   }
 };
 
+Editor.prototype.registerMode = function (name, Mode, options) {
+  var buttonClasses = ['wk-mode'];
+  if(options.active) {
+    buttonClasses.push('wk-mode-active');
+  } else {
+    buttonClasses.push('wk-mode-inactive');
+  }
+
+  var stored = this.modes[name] = {
+    button: tag({ t: 'button', c: buttonClasses.join(' ') }),
+    surface: new Mode(this, options),
+  };
+
+  stored.element = stored.surface.current();
+  stored.history = new InputHistory(stored.surface, name);
+
+  if(stored.element !== this.textarea) {
+    // We need to attach the element
+    this.components.parent.insertBefore(stored.element, this.components.switchboard);
+  }
+
+  // Attach button
+  this.components.switchboard.appendChild(stored.button);
+  stored.button.textContent = strings.modes[name] || name;
+  stored.button.addEventListener('click', this.setMode.bind(this, name));
+  stored.button.type = 'button';
+  stored.button.tabIndex = -1; // TODO Investigate better ways to bypass issues here for accessibility
+  var title = strings.titles[name];
+  if (title) {
+    stored.button.setAttribute('title', mac ? macify(title) : title);
+  }
+
+  // Register shortcut
+  this.shortcuts.attach(stored.element);
+  if(options.shortcutKey) {
+    this.shortcuts.add(options.shortcutKey, !!options.shift, this.setMode.bind(this, name));
+  }
+
+  // Set Mode if Active
+  if(options.active) {
+    this.setMode(name);
+    stored.button.setAttribute('disabled', true);
+  }
+
+  return stored;
+};
+
 Editor.prototype.setMode = function (goToMode, e) {
   var self = this;
   var currentMode = this.modes[this.mode] || {};
@@ -256,13 +273,9 @@ Editor.prototype.setMode = function (goToMode, e) {
 
   this.textarea.blur(); // avert chrome repaint bugs
 
-  var value = this.getSurface().read();
-  if (goToMode === 'markdown') {
-    value = parse('parseHTML', value).trim();
-  } else if (goToMode === 'wysiwyg') {
-    value = parse('parseMarkdown', value).replace(rparagraph, '').trim();
-  }
-  nextMode.surface.write(value);
+  currentMode.surface.off('change', stashChanges);
+  nextMode.surface.writeMarkdown(currentMode.surface.toMarkdown());
+  nextMode.surface.on('change', stashChanges);
 
   classes.add(currentMode.element, 'wk-hide');
   classes.rm(nextMode.element, 'wk-hide');
@@ -292,16 +305,17 @@ Editor.prototype.setMode = function (goToMode, e) {
   // this.history.setInputMode(goToMode);
   fireLater.call(this, 'barkmark-mode-change');
 
-  function parse (method, input) {
-    return self.options[method](input);
+  function stashChanges () {
+    if(nextMode.element !== self.textarea) {
+      self.textarea.value = nextMode.surface.toMarkdown();
+      utils.dispatchBrowserEvent(self.textarea, 'input');
+      utils.dispatchBrowserEvent(self.textarea, 'change');
+    }
   }
 };
 
 Editor.prototype.getMarkdown = function () {
-  if (this.mode === 'wysiwyg') {
-    return this.options.parseHTML(this.modes.wysiwyg.element);
-  }
-  return this.textarea.value;
+  return this.getSurface().toMarkdown();
 };
 
 /*

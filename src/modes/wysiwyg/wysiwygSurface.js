@@ -1,11 +1,38 @@
 'use strict';
 
+var Events = require('../../events');
+var utils = require('../../utils');
+
 var doc = global.document;
 var ropen = /^(<[^>]+(?: [^>]*)?>)/;
 var rclose = /(<\/[^>]+>)$/;
+var rparagraph = /^<p><\/p>\n?$/i;
 
-function WysiwygSurface (editable) {
-  this.editable = editable;
+function WysiwygSurface (editor, options) {
+  this.editor = editor;
+  var editable = this.editable = doc.createElement('div');
+  editable.className = ['wk-wysiwyg', 'wk-hide'].concat(options.classes).join(' ');
+  editable.contentEditable = true;
+
+  var self = this;
+  var _cached = this.read();
+  var debouncedChange = utils.debounce(sendChange, 200);
+
+  editable.addEventListener('blur', sendChange);
+  editable.addEventListener('cut', sendChange);
+  editable.addEventListener('paste', sendChange);
+  editable.addEventListener('textinput', debouncedChange);
+  editable.addEventListener('input', debouncedChange);
+  editable.addEventListener('keypress', debouncedChange);
+  editable.addEventListener('keyup', debouncedChange);
+
+  function sendChange () {
+    var updated = self.read();
+    if(_cached !== updated) {
+      _cached = updated;
+      self.trigger('change', updated);
+    }
+  }
 }
 
 WysiwygSurface.prototype.focus = function (forceImmediate) {
@@ -89,6 +116,21 @@ WysiwygSurface.prototype.readSelection = function (state) {
   }
 };
 
+WysiwygSurface.prototype.toMarkdown = function () {
+  return this.editor.parseHTML(this.read());
+};
+
+WysiwygSurface.prototype.writeMarkdown = function (markdown) {
+  var html = this.editor.parseMarkdown(markdown || '')
+    .replace(rparagraph, '') // Remove empty <p> tags
+    .trim();
+  return this.write(html);
+};
+
+WysiwygSurface.prototype.toHTML = function () {
+  return this.read();
+};
+
 function walk (el, peek, ctx, siblings) {
   var context = ctx || { text: '' };
 
@@ -153,5 +195,7 @@ function unescapeText (el) {
   toText.textContent = el;
   return toText.textContent;
 }
+
+Events.extend(WysiwygSurface);
 
 module.exports = WysiwygSurface;

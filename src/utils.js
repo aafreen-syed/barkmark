@@ -115,7 +115,26 @@ exports.dispatchCustomEvent = function (element, event, params) {
   element.dispatchEvent(ev);
 };
 
+exports.dispatchBrowserEvent = function (element, event) {
+  var ev = new Event(event);
+  element.dispatchEvent(ev);
+};
+
 exports.dispatchClickEvent = function (element) {
   var ev = new MouseEvent('click');
   element.dispatchEvent(ev);
+};
+
+exports.debounce = function (cb, ms) {
+  var tmr;
+  return function () {
+    var self = this,
+      args = Array.prototype.slice.call(arguments);
+
+    clearTimeout(tmr);
+    tmr = setTimeout(function () {
+      tmr = undefined;
+      cb.apply(self, args);
+    }, ms);
+  };
 };
