@@ -1,6 +1,6 @@
 {
   "name": "barkmark",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A modular, and progressive Markdown editor. Originally based off of the woofmark editor",
   "main": "src/barkmark.js",
   "scripts": {

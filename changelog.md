@@ -1,5 +1,9 @@
 # Changes
 
+## v0.4.3
+
+ * Fix issue with some options being incorrectly overriden during setup of defaults
+
 ## v0.4.2
 
  * Fix issue with text area not updating with content from wysiwyg mode as edits are made
