@@ -92,7 +92,7 @@ exports.defaultsDeep = function (target) {
     if (nextSource !== null) { // Skip over if undefined or null
       for (var nextKey in nextSource) {
         if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-          if(Object.prototype.hasOwnProperty(to, nextKey)) {
+          if(Object.prototype.hasOwnProperty.call(to, nextKey)) {
             if(exists(to[nextKey]) && exists(nextSource[nextKey]) && typeof to[nextKey] === 'object' && typeof nextSource[nextKey] === 'object') {
               to[nextKey] = exports.defaultsDeep(to[nextKey], nextSource[nextKey]);
             }
