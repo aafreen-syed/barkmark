@@ -1,9 +1,9 @@
 'use strict';
 
-var utils = require('../utils');
-var once = require('../once');
-var strings = require('../strings');
-var parseLinkInput = require('../chunks/parseLinkInput');
+var utils = require('../../../utils');
+var once = require('../../../once');
+var strings = require('../../../strings');
+var parseLinkInput = require('../../../chunks/parseLinkInput');
 var rleading = /<a( [^>]*)?>$/;
 var rtrailing = /^<\/a>/;
 var rimage = /<img( [^>]*)?\/>$/;

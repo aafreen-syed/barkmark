@@ -1,7 +1,7 @@
 'use strict';
 
-var many = require('../many');
-var strings = require('../strings');
+var many = require('../../../many');
+var strings = require('../../../strings');
 
 function heading (chunks) {
   var level = 0;

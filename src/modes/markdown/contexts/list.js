@@ -1,9 +1,9 @@
 'use strict';
 
-var many = require('../many');
-var strings = require('../strings');
-var wrapping = require('./wrapping');
-var settings = require('./settings');
+var many = require('../../../many');
+var strings = require('../../../strings');
+var wrapping = require('../wrapping');
+var settings = require('../settings');
 var rprevious = /(\n|^)(([ ]{0,3}([*+-]|\d+[.])[ \t]+.*)(\n.+|\n{2,}([*+-].*|\d+[.])[ \t]+.*|\n{2,}[ \t]+\S.*)*)\n*$/;
 var rnext = /^\n*(([ ]{0,3}([*+-]|\d+[.])[ \t]+.*)(\n.+|\n{2,}([*+-].*|\d+[.])[ \t]+.*|\n{2,}[ \t]+\S.*)*)\n*/;
 var rbullettype = /^\s*([*+-])/;

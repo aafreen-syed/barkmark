@@ -1,6 +1,6 @@
 'use strict';
 
-var strings = require('../strings');
+var strings = require('../../../strings');
 var rleading = /<h([1-6])( [^>]*)?>$/;
 var rtrailing = /^<\/h([1-6])>/;
 

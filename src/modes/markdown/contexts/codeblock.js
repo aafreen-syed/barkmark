@@ -1,6 +1,6 @@
 'use strict';
 
-var strings = require('../strings');
+var strings = require('../../../strings');
 var rtextbefore = /\S[ ]*$/;
 var rtextafter = /^[ ]*\S/;
 var rnewline = /\n/;

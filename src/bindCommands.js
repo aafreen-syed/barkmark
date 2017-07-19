@@ -3,26 +3,24 @@
 var utils = require('./utils');
 var commands = {
   markdown: {
-    boldOrItalic: require('./markdown/boldOrItalic'),
-    linkOrImageOrAttachment: require('./markdown/linkOrImageOrAttachment'),
-    blockquote: require('./markdown/blockquote'),
-    codeblock: require('./markdown/codeblock'),
-    heading: require('./markdown/heading'),
-    list: require('./markdown/list'),
-    hr: require('./markdown/hr')
+    boldOrItalic: require('./modes/markdown/contexts/boldOrItalic'),
+    linkOrImageOrAttachment: require('./modes/markdown/contexts/linkOrImageOrAttachment'),
+    blockquote: require('./modes/markdown/contexts/blockquote'),
+    codeblock: require('./modes/markdown/contexts/codeblock'),
+    heading: require('./modes/markdown/contexts/heading'),
+    list: require('./modes/markdown/contexts/list'),
+    hr: require('./modes/markdown/contexts/hr')
   },
-  html: {
-    boldOrItalic: require('./html/boldOrItalic'),
-    linkOrImageOrAttachment: require('./html/linkOrImageOrAttachment'),
-    blockquote: require('./html/blockquote'),
-    codeblock: require('./html/codeblock'),
-    heading: require('./html/heading'),
-    list: require('./html/list'),
-    hr: require('./html/hr')
+  wysiwyg: {
+    boldOrItalic: require('./modes/wysiwyg/contexts/boldOrItalic'),
+    linkOrImageOrAttachment: require('./modes/wysiwyg/contexts/linkOrImageOrAttachment'),
+    blockquote: require('./modes/wysiwyg/contexts/blockquote'),
+    codeblock: require('./modes/wysiwyg/contexts/codeblock'),
+    heading: require('./modes/wysiwyg/contexts/heading'),
+    list: require('./modes/wysiwyg/contexts/list'),
+    hr: require('./modes/wysiwyg/contexts/hr')
   }
 };
-
-commands.wysiwyg = commands.html;
 
 function bindCommands (editor, options) {
   bind('bold', 'b', bold);

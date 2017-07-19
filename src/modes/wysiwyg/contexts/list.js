@@ -1,6 +1,6 @@
 'use strict';
 
-var strings = require('../strings');
+var strings = require('../../../strings');
 var rleftsingle = /<(ul|ol)( [^>]*)?>\s*<li( [^>]*)?>$/;
 var rrightsingle = /^<\/li>\s*<\/(ul|ol)>/;
 var rleftitem = /<li( [^>]*)?>$/;

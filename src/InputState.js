@@ -3,8 +3,8 @@
 var doc = global.document;
 var isVisibleElement = require('./isVisibleElement');
 var fixEOL = require('./fixEOL');
-var MarkdownChunks = require('./markdown/MarkdownChunks');
-var HtmlChunks = require('./html/HtmlChunks');
+var MarkdownChunks = require('./modes/markdown/chunks');
+var HtmlChunks = require('./modes/wysiwyg/chunks');
 var chunks = {
   markdown: MarkdownChunks,
   html: HtmlChunks,

@@ -3,7 +3,7 @@
 var rleading = /^(\**)/;
 var rtrailing = /(\**$)/;
 var rtrailingspace = /(\s?)$/;
-var strings = require('../strings');
+var strings = require('../../../strings');
 
 function boldOrItalic (chunks, type) {
   var rnewlines = /\n{2,}/g;

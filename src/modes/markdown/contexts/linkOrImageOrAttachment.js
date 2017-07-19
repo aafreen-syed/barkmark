@@ -1,8 +1,8 @@
 'use strict';
 
-var once = require('../once');
-var strings = require('../strings');
-var parseLinkInput = require('../chunks/parseLinkInput');
+var once = require('../../../once');
+var strings = require('../../../strings');
+var parseLinkInput = require('../../../chunks/parseLinkInput');
 var rdefinitions = /^[ ]{0,3}\[((?:attachment-)?\d+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|$)/gm;
 var rattachment = /^attachment-(\d+)$/i;
 
