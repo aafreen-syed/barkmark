@@ -2,24 +2,8 @@
 
 var utils = require('./utils');
 var commands = {
-  markdown: {
-    boldOrItalic: require('./modes/markdown/contexts/boldOrItalic'),
-    linkOrImageOrAttachment: require('./modes/markdown/contexts/linkOrImageOrAttachment'),
-    blockquote: require('./modes/markdown/contexts/blockquote'),
-    codeblock: require('./modes/markdown/contexts/codeblock'),
-    heading: require('./modes/markdown/contexts/heading'),
-    list: require('./modes/markdown/contexts/list'),
-    hr: require('./modes/markdown/contexts/hr')
-  },
-  wysiwyg: {
-    boldOrItalic: require('./modes/wysiwyg/contexts/boldOrItalic'),
-    linkOrImageOrAttachment: require('./modes/wysiwyg/contexts/linkOrImageOrAttachment'),
-    blockquote: require('./modes/wysiwyg/contexts/blockquote'),
-    codeblock: require('./modes/wysiwyg/contexts/codeblock'),
-    heading: require('./modes/wysiwyg/contexts/heading'),
-    list: require('./modes/wysiwyg/contexts/list'),
-    hr: require('./modes/wysiwyg/contexts/hr')
-  }
+  markdown: require('./modes/markdown/contexts'),
+  wysiwyg: require('./modes/wysiwyg/contexts'),
 };
 
 function bindCommands (editor, options) {
@@ -45,13 +29,13 @@ function bindCommands (editor, options) {
     };
   }
   function bold (mode, chunks) {
-    commands[mode].boldOrItalic(chunks, 'bold');
+    commands[mode].bold(chunks);
   }
   function italic (mode, chunks) {
-    commands[mode].boldOrItalic(chunks, 'italic');
+    commands[mode].italic(chunks);
   }
   function code (mode, chunks) {
-    commands[mode].codeblock(chunks, { fencing: options.fencing });
+    commands[mode].code(chunks, { fencing: options.fencing });
   }
   function ul (mode, chunks) {
     commands[mode].list(chunks, false);
@@ -61,7 +45,7 @@ function bindCommands (editor, options) {
   }
   function linkOrImageOrAttachment (type, autoUpload) {
     return function linkOrImageOrAttachmentInvoke (mode, chunks) {
-      commands[mode].linkOrImageOrAttachment.call(this, chunks, {
+      commands[mode][type].call(this, chunks, {
         editor: editor,
         mode: mode,
         type: type,
