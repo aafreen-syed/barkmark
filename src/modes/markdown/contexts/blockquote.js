@@ -2,7 +2,7 @@
 
 var strings = require('../../../strings');
 var wrapping = require('./wrapping');
-var settings = require('./settings');
+var settings = require('../settings');
 var rtrailblankline = /(>[ \t]*)$/;
 var rleadblankline = /^(>[ \t]*)/;
 var rnewlinefencing = /^(\n*)([^\r]+?)(\n*)$/;

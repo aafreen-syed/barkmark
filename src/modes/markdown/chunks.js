@@ -1,8 +1,8 @@
 'use strict';
 
-var many = require('../many');
-var extendRegExp = require('../extendRegExp');
-var trimChunks = require('../chunks/trim');
+var many = require('../../many');
+var extendRegExp = require('../../extendRegExp');
+var trimChunks = require('../../chunks/trim');
 
 function MarkdownChunks () {
 }

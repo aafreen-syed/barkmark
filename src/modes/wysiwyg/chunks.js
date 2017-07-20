@@ -1,6 +1,6 @@
 'use strict';
 
-var trimChunks = require('../chunks/trim');
+var trimChunks = require('../../chunks/trim');
 
 function HtmlChunks () {
 }
