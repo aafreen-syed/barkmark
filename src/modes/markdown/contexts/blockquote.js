@@ -1,7 +1,7 @@
 'use strict';
 
 var strings = require('../../../strings');
-var wrapping = require('./wrapping');
+var wrapping = require('../wrapping');
 var settings = require('../settings');
 var rtrailblankline = /(>[ \t]*)$/;
 var rleadblankline = /^(>[ \t]*)/;
