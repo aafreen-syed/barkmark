@@ -6,8 +6,8 @@ var strings = require('./strings');
 var InputHistory = require('./InputHistory');
 var ShortcutManager = require('./shortcuts');
 var getCommandHandler = require('./getCommandHandler');
-var TextSurface = require('./modes/markdown').Surface;
-var WysiwygSurface = require('./modes/wysiwyg').Surface;
+var Markdown = require('./modes/markdown');
+var Wysiwyg = require('./modes/wysiwyg');
 var classes = require('./classes');
 var renderers = require('./renderers');
 var prompt = require('./prompts/prompt');
@@ -61,9 +61,9 @@ function Editor (textarea, options) {
     commands: tag({ c: 'wk-commands' }),
   };
 
+  this.commandButtons = {};
   this.shortcuts = new ShortcutManager();
   this.modes = {};
-  this.mode = 'markdown'; // While initializing we are always showing the textarea "markdown" view
 
   tag({ t: 'span', c: 'wk-drop-text', x: strings.prompts.drop, p: this.components.droparea });
   tag({ t: 'p', c: ['wk-drop-icon'].concat(o.classes.dropicon).join(' '), p: this.components.droparea });
@@ -79,13 +79,13 @@ function Editor (textarea, options) {
   // }
 
   if(o.markdown) {
-    this.registerMode('markdown', TextSurface, {
+    this.registerMode(Markdown, {
       active: (!o.defaultMode || !o[o.defaultMode] || o.defaultMode === 'markdown'),
       shortcutKey: 'm',
     });
   }
   if(o.wysiwyg) {
-    this.registerMode('wysiwyg', WysiwygSurface, {
+    this.registerMode(Wysiwyg, {
       active: o.defaultMode === 'wysiwyg' || !o.markdown,
       shortcutKey: 'p',
       classes: o.classes.wysiwyg || [],
@@ -97,40 +97,47 @@ Editor.prototype.getSurface = function () {
   return this.modes[this.mode].surface;
 };
 
-Editor.prototype.addCommand = function (key, shift, fn) {
-  if(arguments.length === 2) {
-    fn = shift;
-    shift = undefined;
+Editor.prototype.addCommandButton = function (cmd) {
+  var name = cmd.name,
+    btn = tag({ t: 'button', c: 'wk-command', p: this.components.commands });
+
+  if(this.commandButtons[name]) {
+    // Remove any old buttons first
+    this.removeCommandButton(name);
   }
 
-  this.shortcuts.add(key, shift, getCommandHandler(this, this.modes[this.mode].history, fn));
-};
+  this.commandButtons[name] = {
+    name: name,
+    button: btn,
+    command: cmd,
+    boundExecution: cmd.execute.bind(cmd),
+  };
 
-Editor.prototype.addCommandButton = function (id, key, shift, fn) {
-  if (arguments.length === 2) {
-    fn = key;
-    key = undefined;
-    shift = undefined;
-  } else if (arguments.length === 3) {
-    fn = shift;
-    shift = undefined;
-  }
-
-  var button = tag({ t: 'button', c: 'wk-command', p: this.components.commands });
   var custom = this.options.render.commands;
   var render = typeof custom === 'function' ? custom : renderers.commands;
-  var title = strings.titles[id];
+  var title = strings.titles[name];
   if (title) {
-    button.setAttribute('title', mac ? macify(title) : title);
+    btn.setAttribute('title', mac ? macify(title) : title);
   }
-  button.type = 'button';
-  button.tabIndex = -1;
-  render(button, id);
-  button.addEventListener('click', getCommandHandler(this, this.modes[this.mode].history, fn));
-  if (key) {
-    this.addCommand(key, shift, fn);
+  btn.type = 'button';
+  btn.tabIndex = -1;
+  render(btn, name);
+  btn.addEventListener('click', this.commandButtons[name].boundExecution);
+
+  return cmd;
+};
+
+Editor.prototype.removeCommandButton = function (command) {
+  var name = typeof Command === 'string' ? command : command.name,
+    cmd = this.commandButtons[name];
+
+  if(!cmd) {
+    return false;
   }
-  return button;
+
+  delete this.commandButtons[name];
+  cmd.button.removeEventListener('click', cmd.boundExecution);
+  this.components.commands.removeChild(cmd.button);
 };
 
 Editor.prototype.runCommand = function (fn) {
@@ -202,7 +209,7 @@ Editor.prototype.value = function getOrSetValue (input) {
   }
 };
 
-Editor.prototype.registerMode = function (name, Mode, options) {
+Editor.prototype.registerMode = function (Mode, options) {
   var buttonClasses = ['wk-mode'];
   if(options.active) {
     buttonClasses.push('wk-mode-active');
@@ -210,13 +217,16 @@ Editor.prototype.registerMode = function (name, Mode, options) {
     buttonClasses.push('wk-mode-inactive');
   }
 
-  var stored = this.modes[name] = {
-    button: tag({ t: 'button', c: buttonClasses.join(' ') }),
-    surface: new Mode(this, options),
-  };
+  var mode = new Mode(this, options);
+  var name = mode.name;
 
-  stored.element = stored.surface.current();
-  stored.history = new InputHistory(stored.surface, name);
+  var stored = this.modes[name] = {
+    mode: mode,
+    button: tag({ t: 'button', c: buttonClasses.join(' ') }),
+    surface: mode.surface,
+    element: mode.surface.current(),
+    history: new InputHistory(mode.surface, name),
+  };
 
   if(stored.element !== this.textarea) {
     // We need to attach the element
@@ -234,7 +244,7 @@ Editor.prototype.registerMode = function (name, Mode, options) {
     stored.button.setAttribute('title', mac ? macify(title) : title);
   }
 
-  // Register shortcut
+  // Register global shortcuts
   this.shortcuts.attach(stored.element);
   if(options.shortcutKey) {
     this.shortcuts.add(options.shortcutKey, !!options.shift, this.setMode.bind(this, name));
@@ -251,38 +261,39 @@ Editor.prototype.registerMode = function (name, Mode, options) {
 
 Editor.prototype.setMode = function (goToMode, e) {
   var self = this;
-  var currentMode = this.modes[this.mode] || {};
+  var currentMode = this.modes[this.mode];
   var nextMode = this.modes[goToMode];
-  var old = currentMode.button;
   var button = nextMode.button;
-  var focusing = !!e || doc.activeElement === currentMode.element || doc.activeElement === nextMode.element;
+  var focusing = !!e || doc.activeElement === nextMode.element;
 
   stop(e);
 
-  if (currentMode === nextMode) {
-    return;
+  // Change current mode to inactive
+  if(currentMode) {
+    focusing = focusing || doc.activeElement === currentMode.element;
+
+    currentMode.surface.off('change', stashChanges);
+    currentMode.mode.hide();
+    nextMode.surface.writeMarkdown(currentMode.surface.toMarkdown());
+
+    classes.rm(currentMode.button, 'wk-mode-active');
+    classes.add(currentMode.button, 'wk-mode-inactive');
+    currentMode.button.removeAttribute('disabled');
   }
 
   this.textarea.blur(); // avert chrome repaint bugs
 
-  currentMode.surface.off('change', stashChanges);
-  nextMode.surface.writeMarkdown(currentMode.surface.toMarkdown());
   nextMode.surface.on('change', stashChanges);
 
-  classes.add(currentMode.element, 'wk-hide');
-  classes.rm(nextMode.element, 'wk-hide');
-
+  nextMode.mode.show();
 
   if (focusing) {
     nextMode.surface.focus();
   }
 
   classes.add(button, 'wk-mode-active');
-  classes.rm(old, 'wk-mode-active');
-  classes.add(old, 'wk-mode-inactive');
   classes.rm(button, 'wk-mode-inactive');
   button.setAttribute('disabled', 'disabled');
-  old.removeAttribute('disabled');
   this.mode = goToMode;
 
   if (this.options.storage) {
