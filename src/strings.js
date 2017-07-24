@@ -38,7 +38,7 @@ module.exports = {
     link: 'Link',
     image: 'Image',
     attachment: 'Attachment',
-    hr: '\u21b5'
+    hr: '\u2015'
   },
   prompts: {
     link: {
