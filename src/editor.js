@@ -3,7 +3,6 @@
 var utils = require('./utils');
 // var uploads = require('./uploads');
 var strings = require('./strings');
-var bindCommands = require('./bindCommands');
 var InputHistory = require('./InputHistory');
 var ShortcutManager = require('./shortcuts');
 var getCommandHandler = require('./getCommandHandler');
@@ -92,8 +91,6 @@ function Editor (textarea, options) {
       classes: o.classes.wysiwyg || [],
     });
   }
-
-  bindCommands(this, o);
 }
 
 Editor.prototype.getSurface = function () {
