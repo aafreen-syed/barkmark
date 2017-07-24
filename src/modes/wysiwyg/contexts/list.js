@@ -1,71 +1,49 @@
 'use strict';
 
-var strings = require('../../../strings');
-var rleftsingle = /<(ul|ol)( [^>]*)?>\s*<li( [^>]*)?>$/;
-var rrightsingle = /^<\/li>\s*<\/(ul|ol)>/;
-var rleftitem = /<li( [^>]*)?>$/;
-var rrightitem = /^<\/li( [^>]*)?>/;
-var ropen = /^<(ul|ol)( [^>]*)?>$/;
+var doc = global.document;
 
-function list (chunks, ordered) {
-  var tag = ordered ? 'ol' : 'ul';
-  var olist = '<' + tag + '>';
-  var clist = '</' + tag + '>';
-
-  chunks.trim();
-
-  if (rleftsingle.test(chunks.before) && rrightsingle.test(chunks.after)) {
-    if (tag === RegExp.$1) {
-      chunks.before = chunks.before.replace(rleftsingle, '');
-      chunks.after = chunks.after.replace(rrightsingle, '');
-      return;
-    }
-  }
-
-  var ulStart = chunks.before.lastIndexOf('<ul');
-  var olStart = chunks.before.lastIndexOf('<ol');
-  var closeTag = chunks.after.indexOf('</ul>');
-  if (closeTag === -1) {
-    closeTag = chunks.after.indexOf('</ol>');
-  }
-  if (closeTag === -1) {
-    add(); return;
-  }
-  var openStart = ulStart > olStart ? ulStart : olStart;
-  if (openStart === -1) {
-    add(); return;
-  }
-  var openEnd = chunks.before.indexOf('>', openStart);
-  if (openEnd === -1) {
-    add(); return;
-  }
-
-  var openTag = chunks.before.substr(openStart, openEnd - openStart + 1);
-  if (ropen.test(openTag)) {
-    if (tag !== RegExp.$1) {
-      chunks.before = chunks.before.substr(0, openStart) + '<' + tag + chunks.before.substr(openStart + 3);
-      chunks.after = chunks.after.substr(0, closeTag) + '</' + tag + chunks.after.substr(closeTag + 4);
-    } else {
-      if (rleftitem.test(chunks.before) && rrightitem.test(chunks.after)) {
-        chunks.before = chunks.before.replace(rleftitem, '');
-        chunks.after = chunks.after.replace(rrightitem, '');
-      } else {
-        add(true);
-      }
-    }
-  }
-
-  function add (list) {
-    var open = list ? '' : olist;
-    var close = list ? '' : clist;
-
-    chunks.before += open + '<li>';
-    chunks.after = '</li>' + close + chunks.after;
-
-    if (!chunks.selection) {
-      chunks.selection = strings.placeholders.listitem;
-    }
-  }
+function List (ordered, editor, el) {
+  this.ordered = !!ordered;
+  this.editor = editor;
+  this.el = el;
 }
 
-module.exports = list;
+List.prototype.wrap = function (contents) {
+  var list = doc.createElement(this.ordered ? 'ol' : 'ul');
+
+  var currLI = doc.createElement('li');
+  var brCount = 0;
+  list.appendChild(currLI);
+
+  for(var c = 0, l = contents.length; c < l; c++) {
+    var item = contents[c];
+
+    if(item.tagName === 'BR') {
+      if(brCount++ !== 1) {
+        currLI = doc.createElement('li');
+        list.appendChild(currLI);
+      }
+      continue;
+    }
+
+    currLI.appendChild(item);
+    brCount = 0;
+  }
+
+  return list;
+};
+
+List.prototype.unwrap = function (el) {
+  var children = [];
+  for(var e = 0, l = el.children.length; e < l; e++) {
+    children.push.apply(children, el.children[e].childNodes);
+    children.push(doc.createElement('br'));
+  }
+
+  // Remove the last <br>
+  children.pop();
+
+  return children;
+};
+
+module.exports = List;

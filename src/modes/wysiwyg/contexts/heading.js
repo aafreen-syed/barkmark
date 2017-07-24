@@ -1,34 +1,23 @@
 'use strict';
 
-var strings = require('../../../strings');
-var rleading = /<h([1-6])( [^>]*)?>$/;
-var rtrailing = /^<\/h([1-6])>/;
+var doc = global.document;
 
-function heading (chunks) {
-  chunks.trim();
-
-  var trail = rtrailing.exec(chunks.after);
-  var lead = rleading.exec(chunks.before);
-  if (lead && trail && lead[1] === trail[1]) {
-    swap();
-  } else {
-    add();
-  }
-
-  function swap () {
-    var level = parseInt(lead[1], 10);
-    var next = level <= 1 ? 4 : level - 1;
-    chunks.before = chunks.before.replace(rleading, '<h' + next + '>');
-    chunks.after = chunks.after.replace(rtrailing, '</h' + next + '>');
-  }
-
-  function add () {
-    if (!chunks.selection) {
-      chunks.selection = strings.placeholders.heading;
-    }
-    chunks.before += '<h1>';
-    chunks.after = '</h1>' + chunks.after;
-  }
+function Heading (level, editor) {
+  this.level = level || 1;
+  this.editor = editor;
 }
 
-module.exports = heading;
+Heading.prototype.wrap = function (contents) {
+  var header = doc.createElement('h' + this.level);
+  for(var c = 0, l = contents.length; c < l; c++) {
+    header.appendChild(contents);
+  }
+  return header;
+};
+
+Heading.prototype.unwrap = function (el) {
+  // No special unwrap for this, as heading tags will be expected to be mostly clean
+  return el.childNodes;
+};
+
+module.exports = Heading;
