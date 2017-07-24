@@ -72,7 +72,6 @@ function Editor (textarea, options) {
   // Attach Components
   classes.add(parent, 'wk-container');
   parent.insertBefore(this.components.commands, this.textarea);
-  if (this.placeholder) { parent.appendChild(this.placeholder); }
   parent.appendChild(this.components.switchboard);
   // TODO
   // if (this.options.images || this.options.attachments) {
@@ -92,9 +91,6 @@ function Editor (textarea, options) {
       shortcutKey: 'p',
       classes: o.classes.wysiwyg || [],
     });
-
-    this.placeholder = tag({ c: 'wk-wysiwyg-placeholder wk-hide', x: textarea.placeholder });
-    this.placeholder.addEventListener('click', this.modes.wysiwyg.surface.focus.bind(this.modes.wysiwyg.surface));
   }
 
   bindCommands(this, o);
@@ -169,7 +165,6 @@ Editor.prototype.destroy = function () {
 
   // Remove components
   parent.removeChild(this.components.commands);
-  if (this.placeholder) { parent.removeChild(this.placeholder); }
   parent.removeChild(this.components.switchboard);
 
   // Remove all modes that aren't using the textarea
@@ -280,11 +275,6 @@ Editor.prototype.setMode = function (goToMode, e) {
   classes.add(currentMode.element, 'wk-hide');
   classes.rm(nextMode.element, 'wk-hide');
 
-  if (goToMode === 'wysiwyg') {
-    if (this.placeholder) { classes.rm(this.placeholder, 'wk-hide'); }
-  } else {
-    if (this.placeholder) { classes.add(this.placeholder, 'wk-hide'); }
-  }
 
   if (focusing) {
     nextMode.surface.focus();
