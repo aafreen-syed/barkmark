@@ -110,6 +110,11 @@ exports.defaultsDeep = function (target) {
   return to;
 };
 
+exports.inherit = function (SubClass, SuperClass) {
+  SubClass.prototype = Object.create(SuperClass.prototype);
+  SubClass.prototype.constructor = SubClass;
+};
+
 exports.dispatchCustomEvent = function (element, event, params) {
   var ev = new CustomEvent(event, params);
   element.dispatchEvent(ev);
