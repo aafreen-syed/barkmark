@@ -12,7 +12,7 @@ Command.prototype.run = function () {
 };
 
 Command.prototype.execute = function () {
-  return this.run(this.mode.getSelectionContext());
+  return this.run(this.mode.getSelection());
 };
 
 Command.prototype.isActive = function () {
