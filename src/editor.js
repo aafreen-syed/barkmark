@@ -132,7 +132,7 @@ Editor.prototype.addCommandButton = function (cmd) {
 };
 
 Editor.prototype.removeCommandButton = function (command) {
-  var name = typeof Command === 'string' ? command : command.name,
+  var name = typeof command === 'string' ? command : command.name,
     cmd = this.commandButtons[name];
 
   if(!cmd || (typeof command !== 'string' && cmd.command !== command)) {
