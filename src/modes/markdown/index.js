@@ -48,6 +48,11 @@ Markdown.prototype.hide = function () {
   cl.add('wk-hide');
 };
 
+Markdown.prototype.getSelectionContext = function () {
+  // TODO
+  return {};
+};
+
 Markdown.Surface  = Markdown.prototype.Surface  = Surface;
 Markdown.Chunks   = Markdown.prototype.Chunks   = Chunks;
 Markdown.Commands = Markdown.prototype.Commands = Commands;
