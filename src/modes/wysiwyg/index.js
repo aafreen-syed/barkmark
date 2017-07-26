@@ -90,23 +90,34 @@ WYSIWYG.prototype.getSelectionContext = function () {
         end = start;
         endOffset = endOffset - startOffset;
       }
-    } else if (start.nodeType === Node.ELEMENT_NODE && start.childNodes.length > startOffset) {
+    } else if (start.nodeType === Node.ELEMENT_NODE && start.childNodes.length > startOffset && (!singleNode || startOffset !== endOffset)) {
       start = start.childNodes[startOffset];
     } else if (start.nodeType === Node.ELEMENT_NODE) {
       // We're at the end of our start node, let's insert something here
       // so we have a spot to work with when we need to do something
       var txt = doc.createTextNode('');
-      start.appendChild(txt);
-      start = txt;
-      if(singleNode) {
+
+      if (singleNode) {
+        // If we're inbetween two nodes as a cursor...
+        if (startOffset === endOffset && start.childNodes.length > startOffset) {
+          // ... insert between the nodes ....
+          start.insertBefore(txt, start.childNodes[startOffset]);
+        } else {
+          // ... otherwise just insert at the end
+          start.appendChild(txt);
+        }
         endOffset++;
+      } else {
+        start.appendChild(txt);
       }
+
+      start = txt;
     }
 
     // Split off any extra text after the selection if possible
     if(end.nodeType === Node.TEXT_NODE && endOffset < end.textContent.length - 1) {
       end.splitText(endOffset);
-    } else if (start.nodeType === Node.ELEMENT_NODE) {
+    } else if (end.nodeType === Node.ELEMENT_NODE) {
       // We want the full selection which should end with the last node in the selection
       end = end.childNodes[endOffset - 1];
     }
