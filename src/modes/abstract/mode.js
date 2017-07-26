@@ -2,6 +2,8 @@
 
 var ShortcutManager = require('../../shortcuts');
 
+var doc = global.document;
+
 function AbstractMode (editor, options) {
   this.editor = editor;
   this.options = options;
@@ -55,6 +57,14 @@ AbstractMode.prototype.runCommand = function (name) {
     }
   }
   throw new Error('Unable to find a command with the given name ' + name);
+};
+
+AbstractMode.prototype.getSelection = function () {
+  return doc.getSelection();
+};
+
+AbstractMode.prototype.getSelectionContext = function () {
+  return this.defaultContext;
 };
 
 module.exports = AbstractMode;
