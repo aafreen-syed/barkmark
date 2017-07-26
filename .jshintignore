@@ -5,3 +5,4 @@ demo
 ponymark
 karma.conf.js
 test
+coverage
