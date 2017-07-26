@@ -38,7 +38,7 @@ module.exports = {
     link: 'Link',
     image: 'Image',
     attachment: 'Attachment',
-    hr: '\u2015'
+    hr: '\u25AC'
   },
   prompts: {
     link: {
@@ -67,5 +67,18 @@ module.exports = {
   modes: {
     wysiwyg: 'wysiwyg',
     markdown: 'm\u2193',
+  },
+  contexts: {
+    paragraph: 'Paragraph',
+    h1: 'First Heading',
+    h2: 'Second Heading',
+    h3: 'Third Heading',
+    h4: 'Fourth Heading',
+    h5: 'Fifth Heading',
+    h6: 'Sixth Heading',
+    ol: 'Ordered List',
+    ul: 'Unorderd List',
+    blockquote: 'Quote',
+    codeblock: 'Codeblock',
   },
 };

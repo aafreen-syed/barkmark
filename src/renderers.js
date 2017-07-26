@@ -2,6 +2,10 @@
 
 var strings = require('./strings');
 
+function contexts (el, id) {
+  el.textContent = strings.contexts[id] || id;
+}
+
 function commands (el, id) {
   el.textContent = strings.buttons[id] || id;
 }
@@ -12,5 +16,6 @@ function modes (el, id) {
 
 module.exports = {
   modes: modes,
+  contexts: contexts,
   commands: commands
 };
