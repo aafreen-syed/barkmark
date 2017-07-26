@@ -5,11 +5,29 @@ var ShortcutManager = require('../../shortcuts');
 function AbstractMode (editor, options) {
   this.editor = editor;
   this.options = options;
+  this.contexts = [];
   this.commands = [];
   this.shortcuts = new ShortcutManager();
 }
 
 AbstractMode.id = AbstractMode.prototype.name = 'abstract';
+
+AbstractMode.prototype.addContext = function (context) {
+  this.contexts.push(context);
+};
+
+AbstractMode.prototype.removeContext = function (context) {
+  var i = this.contexts.indexOf(context);
+  if(i < 0) {
+    return false;
+  }
+
+  this.contexts.splice(i, 1);
+};
+
+AbstractMode.prototype.getContexts = function () {
+  return this.contexts;
+};
 
 AbstractMode.prototype.addCommand = function (command) {
   this.commands.push(command);
