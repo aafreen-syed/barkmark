@@ -254,6 +254,8 @@ Editor.prototype.registerMode = function (Mode, options) {
   if(options.active) {
     this.setMode(name);
     stored.button.setAttribute('disabled', true);
+  } else {
+    stored.mode.hide();
   }
 
   return stored;
