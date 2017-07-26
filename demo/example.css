@@ -96,7 +96,7 @@ textarea {
 }
 
 button {
-  background-color: #ecf0f1;
+  background-color: transparent;
   color: #8e44ad;
   border: 0;
   padding: 18px 12px;
@@ -143,13 +143,13 @@ kbd {
   padding: 10px;
 }
 
-.wk-commands,
+.wk-command-bar,
 .wk-switchboard {
   display: block;
   background-color: #F4F4F4;
 }
 
-.wk-commands {
+.wk-command-bar {
   border-bottom: 1px solid #EFEFEF;
 }
 
@@ -158,9 +158,42 @@ kbd {
   border-top: 1px solid #EFEFEF;
 }
 
+.wk-command-bar {
+  display: flex;
+  align-items: center;
+}
+
+.wk-contexts {
+  padding-right: 5px;
+  margin-right: 5px;
+  border-right: 1px solid #E0E0E0;
+}
+
+.wk-context-selector {
+  padding: 8px;
+  margin: 5px;
+  min-width: 180px;
+  background-color: #FFFFFF;
+  border: none;
+  border-bottom: 2px solid #999999;
+  line-height: 1.2;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.wk-context-selector:hover, .wk-context-selector:active, .wk-context-selector:focus {
+  border-bottom-color: #8e44ad;
+  color: #8e44ad;
+}
+
+.wk-context {
+  color: #000000 !important;
+}
+
 .wk-commands button,
 .wk-switchboard button {
   vertical-align: bottom;
+  min-width: 2.5em;
 }
 
 .wk-mode-active {
