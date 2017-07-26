@@ -110,7 +110,7 @@ Editor.prototype.addCommandButton = function (cmd) {
     name: name,
     button: btn,
     command: cmd,
-    boundExecution: cmd.execute.bind(cmd),
+    boundExecution: cmd.boundExecution,
   };
 
   var custom = this.options.render.commands;
@@ -131,7 +131,7 @@ Editor.prototype.removeCommandButton = function (command) {
   var name = typeof Command === 'string' ? command : command.name,
     cmd = this.commandButtons[name];
 
-  if(!cmd) {
+  if(!cmd || (typeof command !== 'string' && cmd.command !== command)) {
     return false;
   }
 

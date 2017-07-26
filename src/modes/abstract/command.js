@@ -1,13 +1,18 @@
 'use strict';
 
-function Command (editor, options) {
+function Command (mode, editor, options) {
+  this.mode = mode;
   this.editor = editor;
   this.options = options || {};
   this.boundExecution = this.execute.bind(this);
 }
 
-Command.prototype.execute = function () {
+Command.prototype.run = function () {
   return;
+};
+
+Command.prototype.execute = function () {
+  return this.run(this.mode.getSelectionContext());
 };
 
 Command.prototype.isActive = function () {

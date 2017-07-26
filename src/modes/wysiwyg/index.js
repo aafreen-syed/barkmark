@@ -14,7 +14,7 @@ function WYSIWYG (editor, options) {
 
   // Add commands
   Commands.forEach((function (Command) {
-    this.addCommand(new Command(editor));
+    this.addCommand(new Command(this, editor));
   }).bind(this));
 }
 
