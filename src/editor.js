@@ -58,10 +58,14 @@ function Editor (textarea, options) {
     parent: textarea.parentNode,
     droparea: tag({ c: 'wk-container-drop' }),
     switchboard: tag({ c: 'wk-switchboard' }),
+    commandbar: tag({ c: 'wk-command-bar' }),
     commands: tag({ c: 'wk-commands' }),
+    contexts: tag({ c: 'wk-contexts wk-hide' }),
+    contextSelect: tag({ t: 'select', c: 'wk-context-selector' }),
   };
 
   this.commandButtons = {};
+  this.contextOptions = {};
   this.shortcuts = new ShortcutManager();
   this.modes = {};
 
@@ -70,7 +74,10 @@ function Editor (textarea, options) {
 
   // Attach Components
   classes.add(parent, 'wk-container');
-  parent.insertBefore(this.components.commands, this.textarea);
+  this.components.contexts.appendChild(this.components.contextSelect);
+  this.components.commandbar.appendChild(this.components.contexts);
+  this.components.commandbar.appendChild(this.components.commands);
+  parent.insertBefore(this.components.commandbar, this.textarea);
   parent.appendChild(this.components.switchboard);
   // TODO
   // if (this.options.images || this.options.attachments) {
@@ -91,6 +98,16 @@ function Editor (textarea, options) {
       classes: o.classes.wysiwyg || [],
     });
   }
+
+  this.selectionChangeListener = (function () {
+    var mode = this.getMode();
+    if(mode.getContexts().length) {
+      this.setActiveContext(mode.getSelectionContext());
+    }
+  }).bind(this);
+
+  // Setup Context Selection Checking
+  doc.addEventListener('selectionchange', this.selectionChangeListener);
 }
 
 Editor.prototype.getSurface = function () {
@@ -144,6 +161,64 @@ Editor.prototype.removeCommandButton = function (command) {
   this.components.commands.removeChild(cmd.button);
 };
 
+Editor.prototype.addContextOption = function (context) {
+  var name = context.name,
+    option = tag({ t: 'option', c: 'wk-context', p: this.components.contextSelect });
+
+  if(this.contextOptions[name]) {
+    // Remove any old buttons first
+    this.removeContextOption(name);
+  }
+
+  this.contextOptions[name] = {
+    name: name,
+    option: option,
+    context: context,
+  };
+
+  var custom = this.options.render.context;
+  var render = typeof custom === 'function' ? custom : renderers.contexts;
+  render(option, name);
+  option.classList.add('wk-context-' + name);
+
+  if(Object.keys(this.contextOptions).length > 0) {
+    this.components.contexts.classList.remove('wk-hide');
+  }
+
+  return context;
+};
+
+Editor.prototype.removeContextOption = function (context) {
+  var name = typeof context === 'string' ? context : context.name,
+    ctx = this.contextOptions[name];
+
+  if(!ctx || (typeof context !== 'string' && ctx.context !== context)) {
+    return false;
+  }
+
+  delete this.contextOptions[name];
+  this.components.contextSelect.removeChild(ctx.option);
+
+  if(Object.keys(this.contextOptions).length === 0) {
+    this.components.contexts.classList.add('wk-hide');
+  }
+};
+
+Editor.prototype.setActiveContext = function (context) {
+  if(!context) {
+    return this.components.contextSelect.selectedIndex = -1;
+  }
+
+  var name = typeof context === 'string' ? context : context.name,
+    ctx = this.contextOptions[name];
+
+  if(!ctx || (typeof context !== 'string' && ctx.context !== context)) {
+    return this.components.contextSelect.selectedIndex = -1;
+  }
+
+  ctx.option.selected = true;
+};
+
 Editor.prototype.runCommand = function (fn) {
   getCommandHandler(this, this.modes[this.mode].history, rearrange)(null);
 
@@ -185,6 +260,9 @@ Editor.prototype.destroy = function () {
     // TODO Detach change event listeners for surface elements
     this.shortcuts.detach(self.modes[mode].element);
   });
+
+  // Remove Context Selection Listener
+  doc.removeEventListener('selectionchange', this.selectionChangeListener);
 
   // TODO
   // if (this.options.images || this.options.attachments) {
