@@ -13,6 +13,20 @@ function WYSIWYG (editor, options) {
   this.surface = new Surface(editor, options);
   this.shortcuts.attach(this.surface.current());
 
+  // Add contexts
+  this.defaultContext = new Contexts.Paragraph(this, editor);
+  this.addContext(this.defaultContext);
+  this.addContext(new Contexts.Heading(this, editor, { level: 1 }));
+  this.addContext(new Contexts.Heading(this, editor, { level: 2 }));
+  this.addContext(new Contexts.Heading(this, editor, { level: 3 }));
+  this.addContext(new Contexts.Heading(this, editor, { level: 4 }));
+  this.addContext(new Contexts.Heading(this, editor, { level: 5 }));
+  this.addContext(new Contexts.Heading(this, editor, { level: 6 }));
+  this.addContext(new Contexts.List(this, editor, { ordered: false }));
+  this.addContext(new Contexts.List(this, editor, { ordered: true }));
+  this.addContext(new Contexts.Blockquote(this, editor));
+  this.addContext(new Contexts.Codeblock(this, editor));
+
   // Add commands
   Commands.forEach((function (Command) {
     this.addCommand(new Command(this, editor));
@@ -24,7 +38,12 @@ utils.inherit(WYSIWYG, Mode);
 WYSIWYG.id = WYSIWYG.prototype.name = 'wysiwyg';
 
 WYSIWYG.prototype.show = function () {
+  var el = this.surface.current();
+
   // Register mode contexts
+  this.getContexts().forEach((function (context) {
+    this.editor.addContextOption(context);
+  }).bind(this));
 
   // Add commands to command bar
   this.getCommands().forEach((function (command) {
@@ -32,12 +51,17 @@ WYSIWYG.prototype.show = function () {
   }).bind(this));
 
   // Show the editing surface
-  var cl = this.surface.current().classList;
+  var cl = el.classList;
   cl.remove('wk-hide');
 };
 
 WYSIWYG.prototype.hide = function () {
+  var el = this.surface.current();
+
   // Unregister mode contexts
+  this.getContexts().forEach((function (context) {
+    this.editor.removeContextOption(context);
+  }).bind(this));
 
   // Remove commands from the command bar
   this.getCommands().forEach((function (command) {
@@ -45,11 +69,11 @@ WYSIWYG.prototype.hide = function () {
   }).bind(this));
 
   // Hide the editing surface
-  var cl = this.surface.current().classList;
+  var cl = el.classList;
   cl.add('wk-hide');
 };
 
-WYSIWYG.prototype.getSelectionContext = function () {
+WYSIWYG.prototype.getSelection = function () {
   var sel = doc.getSelection(),
     surfaceEl = this.surface.current(),
     ctx = {
@@ -86,9 +110,11 @@ WYSIWYG.prototype.getSelectionContext = function () {
     // Split off any extra text before the selection if possible
     if(start.nodeType === Node.TEXT_NODE && startOffset > 0) {
       start = start.splitText(startOffset);
+      // Always make sure we recalculate the end offset in case it changed
+      endOffset = range.endOffset;
+
       if(singleNode) {
         end = start;
-        endOffset = endOffset - startOffset;
       }
     } else if (start.nodeType === Node.ELEMENT_NODE && start.childNodes.length > startOffset && (!singleNode || startOffset !== endOffset)) {
       start = start.childNodes[startOffset];
@@ -181,6 +207,39 @@ WYSIWYG.prototype.getSelectionContext = function () {
 
     return results;
   }
+};
+
+WYSIWYG.prototype.getSelectionContext = function () {
+  var ctx = this.getSelection(),
+    surfaceEl = ctx.top,
+    foundContexts = [];
+
+  ctx.selections.forEach(function (sel) {
+    sel.topLevelNodes.forEach(function (node) {
+      var finding = this.defaultContext;
+      while(node && node !== surfaceEl && node.parentNode !== surfaceEl) {
+        node = node.parentNode;
+      }
+
+      if(node && node !== surfaceEl) {
+        for(var c = 0, l = this.contexts.length; c < l; c++) {
+          if(this.contexts[c].isActive(node)) {
+            finding = this.contexts[c];
+            break;
+          }
+        }
+      }
+
+      if(foundContexts.indexOf(finding) < 0) {
+        foundContexts.push(finding);
+      }
+    }, this); // END topLevelNodes.forEach
+  }, this); // END selection.forEach
+
+  if(foundContexts.length < 2) {
+    return foundContexts[0];
+  }
+  return foundContexts;
 };
 
 WYSIWYG.Surface  = WYSIWYG.prototype.Surface  = Surface;

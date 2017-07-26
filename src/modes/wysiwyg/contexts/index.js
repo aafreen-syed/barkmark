@@ -1,13 +1,15 @@
 'use strict';
 
-var blockquote = require('./blockquote');
-var codeblock = require('./codeblock');
-var heading = require('./heading');
-var list = require('./list');
+var Blockquote = require('./blockquote');
+var Codeblock = require('./codeblock');
+var Heading = require('./heading');
+var List = require('./list');
+var Paragraph = require('./paragraph');
 
 module.exports = {
-  blockquote: blockquote,
-  code: codeblock,
-  heading: heading,
-  list: list,
+  Blockquote: Blockquote,
+  Codeblock:  Codeblock,
+  Heading:    Heading,
+  List:       List,
+  Paragraph:  Paragraph,
 };

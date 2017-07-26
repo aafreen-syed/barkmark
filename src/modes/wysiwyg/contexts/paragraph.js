@@ -1,22 +1,28 @@
 'use strict';
 
+var utils = require('../../../utils');
+var Context = require('../../abstract/context');
+
 var doc = global.document;
 
-function Paragraph (editor) {
-  this.editor = editor;
+function Paragraph (mode, editor, options) {
+  Context.call(this, mode, editor, options);
 }
 
-Paragraph.prototype.wrap = function (contents) {
+utils.inherit(Paragraph, Context);
+
+Paragraph.id = Paragraph.prototype.name = 'paragraph';
+
+Paragraph.prototype.wrap = function (nodes) {
   var p = doc.createElement('p');
-  for(var c = 0, l = contents.length; c < l; c++) {
-    p.appendChild(contents);
+  for(var c = 0, l = nodes.length; c < l; c++) {
+    p.appendChild(nodes[c]);
   }
   return p;
 };
 
-Paragraph.prototype.unwrap = function (el) {
-  // No special unwrap for this, as <p> tags will be expected to be mostly clean
-  return el.childNodes;
+Paragraph.prototype.isActive = function (node) {
+  return node && node.nodeName === 'P';
 };
 
 module.exports = Paragraph;

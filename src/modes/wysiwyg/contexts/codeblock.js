@@ -1,29 +1,40 @@
 'use strict';
 
+var utils = require('../../../utils');
+var Context = require('../../abstract/context');
+
 var doc = global.document;
 
-function CodeBlock (editor) {
-  this.editor = editor;
+function CodeBlock (mode, editor, options) {
+  Context.call(this, mode, editor, options);
 }
 
-CodeBlock.prototype.wrap = function (contents) {
+utils.inherit(CodeBlock, Context);
+
+CodeBlock.id = CodeBlock.prototype.name = 'codeblock';
+
+CodeBlock.prototype.wrap = function (nodes) {
   var pre = doc.createElement('pre');
   var code = doc.createElement('code');
   pre.appendChild(code);
 
-  for(var c = 0, l = contents.length; c < l; c++) {
-    code.appendChild(contents);
+  for(var c = 0, l = nodes.length; c < l; c++) {
+    code.appendChild(nodes[c]);
   }
   return code;
 };
 
-CodeBlock.prototype.unwrap = function (el) {
+CodeBlock.prototype.unwrap = function (node) {
   // If we're wrapped in <pre><code> we want to unwrap both elements
-  if(el.tagName === 'PRE' && el.childNodes.length === 1 && el.childNodes[0].tagName === 'CODE') {
-    return el.childNodes[0].childNodes;
+  if(node.tagName === 'PRE' && node.childNodes.length === 1 && node.childNodes[0].tagName === 'CODE') {
+    return node.childNodes[0].childNodes;
   }
   // Otherwise we want to preserve the contents of the unwrap
-  return el.childNodes;
+  return node.childNodes;
+};
+
+CodeBlock.prototype.isActive = function (node) {
+  return node && node.nodeName === 'PRE' && node.childNodes.length === 1 && node.childNodes[0].nodeName === 'CODE';
 };
 
 module.exports = CodeBlock;

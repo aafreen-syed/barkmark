@@ -1,22 +1,28 @@
 'use strict';
 
+var utils = require('../../../utils');
+var Context = require('../../abstract/context');
+
 var doc = global.document;
 
-function Blockquote (editor) {
-  this.editor = editor;
+function Blockquote (mode, editor, options) {
+  Context.call(this, mode, editor, options);
 }
 
-Blockquote.prototype.wrap = function (contents) {
+utils.inherit(Blockquote, Context);
+
+Blockquote.id = Blockquote.prototype.name = 'blockquote';
+
+Blockquote.prototype.wrap = function (nodes) {
   var quote = doc.createElement('blockquote');
-  for(var c = 0, l = contents.length; c < l; c++) {
-    quote.appendChild(contents);
+  for(var c = 0, l = nodes.length; c < l; c++) {
+    quote.appendChild(nodes[c]);
   }
   return quote;
 };
 
-Blockquote.prototype.unwrap = function (el) {
-  // No special unwrap for this, as <blockquote> tags will be expected to be mostly clean
-  return el.childNodes;
+Blockquote.prototype.isActive = function (node) {
+  return node && node.nodeName === 'BLOCKQUOTE';
 };
 
 module.exports = Blockquote;

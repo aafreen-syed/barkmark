@@ -1,22 +1,35 @@
 'use strict';
 
+var utils = require('../../../utils');
+var Context = require('../../abstract/context');
+
 var doc = global.document;
 
-function List (ordered, editor, el) {
-  this.ordered = !!ordered;
-  this.editor = editor;
-  this.el = el;
+function List (mode, editor, options) {
+  Context.call(this, mode, editor, options);
+  this.ordered = !!options.ordered;
+
+  Object.defineProperty(this, 'name', {
+    enumerable: true,
+    get: function () {
+      return this.ordered ? 'ol' : 'ul';
+    }
+  });
 }
 
-List.prototype.wrap = function (contents) {
+utils.inherit(List, Context);
+
+List.id = List.prototype.name = 'list';
+
+List.prototype.wrap = function (nodes) {
   var list = doc.createElement(this.ordered ? 'ol' : 'ul');
 
   var currLI = doc.createElement('li');
   var brCount = 0;
   list.appendChild(currLI);
 
-  for(var c = 0, l = contents.length; c < l; c++) {
-    var item = contents[c];
+  for(var c = 0, l = nodes.length; c < l; c++) {
+    var item = nodes[c];
 
     if(item.tagName === 'BR') {
       if(brCount++ !== 1) {
@@ -33,10 +46,10 @@ List.prototype.wrap = function (contents) {
   return list;
 };
 
-List.prototype.unwrap = function (el) {
+List.prototype.unwrap = function (node) {
   var children = [];
-  for(var e = 0, l = el.children.length; e < l; e++) {
-    children.push.apply(children, el.children[e].childNodes);
+  for(var e = 0, l = node.children.length; e < l; e++) {
+    children.push.apply(children, node.children[e].childNodes);
     children.push(doc.createElement('br'));
   }
 
@@ -44,6 +57,10 @@ List.prototype.unwrap = function (el) {
   children.pop();
 
   return children;
+};
+
+List.prototype.isActive = function (node) {
+  return node && (this.ordered && node.nodeName === 'OL') || (!this.ordered && node.nodeName === 'UL');
 };
 
 module.exports = List;
