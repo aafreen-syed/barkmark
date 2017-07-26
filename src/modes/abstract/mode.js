@@ -31,7 +31,12 @@ AbstractMode.prototype.getCommands = function () {
 };
 
 AbstractMode.prototype.runCommand = function (name) {
-  return this.commands[name].execute(this.surface.readSelection());
+  for(var c = 0, l = this.commands.length; c < l; c++) {
+    if(this.commands[c].name === name) {
+      return this.commands[c].execute(this.surface.readSelection());
+    }
+  }
+  throw new Error('Unable to find a command with the given name ' + name);
 };
 
 module.exports = AbstractMode;
