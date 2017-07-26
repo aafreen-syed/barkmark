@@ -1,55 +1,5 @@
 'use strict';
 
-var PHRASING_NODE_NAMES = [
-  'ABBR',
-  'AREA',
-  'AUDIO',
-  'B',
-  'BDO',
-  'BR',
-  'BUTTON',
-  'CANVAS',
-  'CITE',
-  'CODE',
-  'COMMAND',
-  'DATA',
-  'DATALIST',
-  'DFN',
-  'EM',
-  'EMBED',
-  'I',
-  'IFRAME',
-  'IMG',
-  'INPUT',
-  'KBD',
-  'KEYGEN',
-  'LABEL',
-  'MARK',
-  'MATH',
-  'METER',
-  'NOSCRIPT',
-  'OBJECT',
-  'OUTPUT',
-  'PROGRESS',
-  'Q',
-  'RUBY',
-  'SAMP',
-  'SCRIPT',
-  'SELECT',
-  'SMALL',
-  'SPAN',
-  'STRONG',
-  'SUB',
-  'SUP',
-  'SVG',
-  'TEXTAREA',
-  'TIME',
-  'VAR',
-  'VIDEO',
-  'WBR'
-  // NOTE: There are a few more with restrictions that are handled in the function below
-];
-
 // Object.assign polyfill
 // Ignore Polyfill code for linting (overriding globals here is expected)
 /* jshint ignore:start */
@@ -192,20 +142,4 @@ exports.debounce = function (cb, ms) {
       cb.apply(self, args);
     }, ms);
   };
-};
-
-exports.isPhrasingContent = function (el) {
-  return el.nodeType === Node.TEXT_NODE ||
-    PHRASING_NODE_NAMES.indexOf(el.nodeName) >= 0 ||
-    (['LINK', 'META'].indexOf(el.nodeName) >= 0 && el.getAttribute('itemProp')) ||
-    (['A', 'DEL', 'INS', 'MAP'].indexOf(el.nodeName) >= 0 && childrenArePhrasing(el));
-
-  function childrenArePhrasing(node) {
-    for(var c = 0, l = node.childNodes.length; c < l; c++) {
-      if(!exports.isPhrasingContent(node.childNodes[c])) {
-        return false;
-      }
-    }
-    return true;
-  }
 };
