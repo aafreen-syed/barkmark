@@ -97,6 +97,10 @@ Editor.prototype.getSurface = function () {
   return this.modes[this.mode].surface;
 };
 
+Editor.prototype.getMode = function () {
+  return this.modes[this.mode].mode;
+};
+
 Editor.prototype.addCommandButton = function (cmd) {
   var name = cmd.name,
     btn = tag({ t: 'button', c: 'wk-command', p: this.components.commands });
