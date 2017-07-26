@@ -14,6 +14,8 @@ function WysiwygSurface (editor, options) {
   editable.className = ['wk-wysiwyg', 'wk-hide'].concat(options.classes).join(' ');
   editable.contentEditable = true;
 
+  this.writeMarkdown(editor.textarea.value);
+
   var self = this;
   var _cached = this.read();
   var debouncedChange = utils.debounce(sendChange, 200);
