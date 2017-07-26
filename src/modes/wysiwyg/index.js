@@ -97,6 +97,11 @@ WYSIWYG.prototype.getSelectionContext = function () {
       // so we have a spot to work with when we need to do something
       var txt = doc.createTextNode('');
 
+      if(start === surfaceEl) {
+        // Special case the root node because we want to remain in <p> context if we can
+        txt = doc.createElement('p');
+      }
+
       if (singleNode) {
         // If we're inbetween two nodes as a cursor...
         if (startOffset === endOffset && start.childNodes.length > startOffset) {
