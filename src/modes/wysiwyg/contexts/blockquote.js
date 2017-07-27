@@ -21,6 +21,11 @@ Blockquote.prototype.wrap = function (nodes) {
   return quote;
 };
 
+Blockquote.prototype.unwrap = function (node) {
+  // No special unwrap needed
+  return Array.prototype.slice.call(node.childNodes);
+};
+
 Blockquote.prototype.isActive = function (node) {
   return node && node.nodeName === 'BLOCKQUOTE';
 };

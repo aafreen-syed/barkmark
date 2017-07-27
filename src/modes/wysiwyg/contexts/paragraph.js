@@ -21,6 +21,11 @@ Paragraph.prototype.wrap = function (nodes) {
   return p;
 };
 
+Paragraph.prototype.unwrap = function (node) {
+  // No special unwrap needed
+  return Array.prototype.slice.call(node.childNodes);
+};
+
 Paragraph.prototype.isActive = function (node) {
   return node && node.nodeName === 'P';
 };

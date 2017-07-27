@@ -40,6 +40,11 @@ Heading.prototype.wrap = function (nodes) {
   return header;
 };
 
+Heading.prototype.unwrap = function (node) {
+  // No special unwrap needed
+  return Array.prototype.slice.call(node.childNodes);
+};
+
 Heading.prototype.isActive = function (node) {
   return node && node.nodeName === ('H' + this.level);
 };
