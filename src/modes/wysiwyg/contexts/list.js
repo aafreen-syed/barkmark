@@ -40,6 +40,7 @@ List.prototype.wrap = function (nodes) {
     }
 
     currLI.appendChild(item);
+    currLI.normalize();
     brCount = 0;
   }
 
