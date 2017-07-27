@@ -205,3 +205,11 @@ exports.findPhrasingElement = function (node, matches) {
   }
   return false;
 };
+
+exports.findContextElement = function (node, top) {
+  while(node && node !== top && node.parentNode !== top) {
+    node = node.parentNode;
+  }
+
+  return node !== top ? node : null;
+};
