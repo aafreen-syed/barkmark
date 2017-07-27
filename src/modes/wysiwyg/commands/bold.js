@@ -22,8 +22,6 @@ utils.inherit(BoldCommand, Command);
 BoldCommand.id = BoldCommand.prototype.name = 'bold';
 
 BoldCommand.prototype.run = function (ctx) {
-  console.log(ctx);
-
   ctx.selections.forEach(function (sel) {
     if(sel.range.collapsed) {
       // We're in a collapsed selection, just insert text here
@@ -59,10 +57,26 @@ BoldCommand.prototype.run = function (ctx) {
   this.mode.surface.current().normalize();
 };
 
-/*
 BoldCommand.prototype.isActive = function (ctx) {
+  var isBold;
 
+  for (var s = 0, l = ctx.selections.length; s < l; s++) {
+    var sel = ctx.selections[s];
+
+    for(var t = 0, tl = sel.topLevelNodes.length; t < tl; t++) {
+      var node = sel.topLevelNodes[t];
+
+      var isAlreadyBold = !!htmlUtils.findPhrasingElement(node, BOLD_NODES);
+
+      if (typeof isBold  !== 'undefined' && isAlreadyBold !== isBold) {
+        // We can return immediately if we hit mixed content
+        return 'mixed';
+      }
+      isBold = isBold || isAlreadyBold;
+    }
+  }
+
+  return isBold;
 };
- */
 
 module.exports = BoldCommand;

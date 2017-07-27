@@ -59,10 +59,26 @@ ItalicCommand.prototype.run = function (ctx) {
   this.mode.surface.current().normalize();
 };
 
-/*
 ItalicCommand.prototype.isActive = function (ctx) {
+  var isItalic;
 
+  for (var s = 0, l = ctx.selections.length; s < l; s++) {
+    var sel = ctx.selections[s];
+
+    for(var t = 0, tl = sel.topLevelNodes.length; t < tl; t++) {
+      var node = sel.topLevelNodes[t];
+
+      var isAlreadyItalic = !!htmlUtils.findPhrasingElement(node, ITALIC_NODES);
+
+      if (typeof isItalic  !== 'undefined' && isAlreadyItalic !== isItalic) {
+        // We can return immediately if we hit mixed content
+        return 'mixed';
+      }
+      isItalic = isItalic || isAlreadyItalic;
+    }
+  }
+
+  return isItalic;
 };
- */
 
 module.exports = ItalicCommand;
