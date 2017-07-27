@@ -19,9 +19,15 @@ CodeBlock.prototype.wrap = function (nodes) {
   pre.appendChild(code);
 
   for(var c = 0, l = nodes.length; c < l; c++) {
-    code.appendChild(nodes[c]);
+    var node = nodes[c];
+    // Strip out any inline content like bold or links
+    if(node.nodeType === Node.ELEMENT_NODE) {
+      node = doc.createTextNode(node.textContent || '');
+    }
+    code.appendChild(node);
   }
-  return code;
+  code.normalize();
+  return pre;
 };
 
 CodeBlock.prototype.unwrap = function (node) {
@@ -35,6 +41,10 @@ CodeBlock.prototype.unwrap = function (node) {
 
 CodeBlock.prototype.isActive = function (node) {
   return node && node.nodeName === 'PRE' && node.childNodes.length === 1 && node.childNodes[0].nodeName === 'CODE';
+};
+
+CodeBlock.prototype.allowPhrasingEdits = function () {
+  return false;
 };
 
 module.exports = CodeBlock;
