@@ -67,4 +67,9 @@ AbstractMode.prototype.getSelectionContext = function () {
   return this.defaultContext;
 };
 
+AbstractMode.prototype.transformSelectionContext = function (sel, ctx) {
+  var oldCtx = this.getSelectionContext();
+  return ctx.wrap(oldCtx.unwrap(sel));
+};
+
 module.exports = AbstractMode;

@@ -125,8 +125,28 @@ function Editor (textarea, options) {
     }
   }).bind(this);
 
+  this.contextChangeListener = (function () {
+    var mode = this.getMode(),
+      sel = mode.getSelection(),
+      allCtxs = Object.keys(this.contextOptions),
+      newCtx;
+
+    for(var c = 0, l = allCtxs.length; c < l; c++) {
+      var checking = this.contextOptions[allCtxs[c]];
+      if(checking.option.selected) {
+        newCtx = checking.context;
+        break;
+      }
+    }
+
+    if(newCtx) {
+      mode.transformSelectionContext(sel, newCtx);
+    }
+  }).bind(this);
+
   // Setup Context Selection Checking
   doc.addEventListener('selectionchange', this.selectionChangeListener);
+  this.components.contextSelect.addEventListener('change', this.contextChangeListener);
 }
 
 Editor.prototype.getSurface = function () {
@@ -282,6 +302,7 @@ Editor.prototype.destroy = function () {
 
   // Remove Context Selection Listener
   doc.removeEventListener('selectionchange', this.selectionChangeListener);
+  this.components.contextSelect.removeEventListener('change', this.contextChangeListener);
 
   // TODO
   // if (this.options.images || this.options.attachments) {
