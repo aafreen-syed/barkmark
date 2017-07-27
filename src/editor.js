@@ -102,7 +102,26 @@ function Editor (textarea, options) {
   this.selectionChangeListener = (function () {
     var mode = this.getMode();
     if(mode.getContexts().length) {
-      this.setActiveContext(mode.getSelectionContext());
+      var sel = mode.getSelection();
+      this.setActiveContext(mode.getSelectionContext(sel));
+      var btns = Object.keys(this.commandButtons);
+      btns.forEach(function (btn) {
+        btn = this.commandButtons[btn];
+        var btnActive = btn.command.isActive(sel),
+          btnAvailable = btn.command.isAvailable(sel);
+
+        btn.button.classList.remove('wk-active');
+        btn.button.classList.remove('wk-mixed');
+        btn.button.classList.remove('wk-disabled');
+
+        if(btnActive === 'mixed') {
+          btn.button.classList.add('wk-mixed');
+        } else if (btnActive) {
+          btn.button.classList.add('wk-active');
+        }
+
+        btn.button.disabled = !btnAvailable;
+      }, this);
     }
   }).bind(this);
 
