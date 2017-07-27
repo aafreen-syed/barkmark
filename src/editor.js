@@ -153,6 +153,8 @@ function Editor (textarea, options) {
 
     if(newCtx) {
       mode.transformSelectionContext(sel, newCtx);
+      // Once we've changed contexts, we should "refresh" the state
+      this.selectionChangeListener();
     }
   }).bind(this);
 
