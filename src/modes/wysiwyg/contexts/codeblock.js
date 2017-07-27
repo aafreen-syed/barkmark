@@ -33,10 +33,10 @@ CodeBlock.prototype.wrap = function (nodes) {
 CodeBlock.prototype.unwrap = function (node) {
   // If we're wrapped in <pre><code> we want to unwrap both elements
   if(node.tagName === 'PRE' && node.childNodes.length === 1 && node.childNodes[0].tagName === 'CODE') {
-    return node.childNodes[0].childNodes;
+    return Array.prototype.slice.call(node.childNodes[0].childNodes);
   }
   // Otherwise we want to preserve the contents of the unwrap
-  return node.childNodes;
+  return Array.prototype.slice.call(node.childNodes);
 };
 
 CodeBlock.prototype.isActive = function (node) {
