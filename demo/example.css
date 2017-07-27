@@ -55,6 +55,13 @@ pre code {
   font-size: 18px;
 }
 
+*:not(pre) code {
+  background-color: #EFEFEF;
+  color: #2f2f2f;
+  display: inline-block;
+  padding: 2px 4px;
+}
+
 blockquote {
   border-left: 5px solid #E88139;
   margin: 10px 0;
@@ -175,7 +182,6 @@ kbd {
   min-width: 180px;
   background-color: #FFFFFF;
   border: none;
-  border-bottom: 2px solid #999999;
   line-height: 1.2;
   cursor: pointer;
   font-weight: bolder;
@@ -194,6 +200,11 @@ kbd {
 .wk-switchboard button {
   vertical-align: bottom;
   min-width: 2.5em;
+}
+
+.wk-command.wk-active {
+  background-color: #4f4f4f;
+  color: #FFFFFF;
 }
 
 .wk-mode-active {
