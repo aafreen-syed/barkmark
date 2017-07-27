@@ -23,6 +23,10 @@ Command.prototype.isAvailable = function () {
   return true;
 };
 
+Command.prototype.isPhrasingEdit = function () {
+  return true;
+};
+
 Command.prototype.registerShortcut = function (shortcuts) {
   if(this.options.shortcut) {
     shortcuts.add(this.options.shortcut, !!this.options.shift, this.boundExecution);

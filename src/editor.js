@@ -102,13 +102,25 @@ function Editor (textarea, options) {
   this.selectionChangeListener = (function () {
     var mode = this.getMode();
     if(mode.getContexts().length) {
-      var sel = mode.getSelection();
-      this.setActiveContext(mode.getSelectionContext(sel));
+      var sel = mode.getSelection(),
+        selCtx = mode.getSelectionContext(sel),
+        allowPhrasing = true;
+
+      this.setActiveContext(selCtx);
+
+      if(selCtx instanceof Array) {
+        selCtx.forEach(function (ctx) {
+          allowPhrasing = allowPhrasing && ctx.allowPhrasingEdits();
+        });
+      } else if (selCtx) {
+        allowPhrasing = selCtx.allowPhrasingEdits();
+      }
+
       var btns = Object.keys(this.commandButtons);
       btns.forEach(function (btn) {
         btn = this.commandButtons[btn];
         var btnActive = btn.command.isActive(sel),
-          btnAvailable = btn.command.isAvailable(sel);
+          btnAvailable = (allowPhrasing || !btn.command.isPhrasingEdit()) && btn.command.isAvailable(sel);
 
         btn.button.classList.remove('wk-active');
         btn.button.classList.remove('wk-mixed');

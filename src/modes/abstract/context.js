@@ -22,4 +22,8 @@ Context.prototype.isAvailable = function () {
   return true;
 };
 
+Context.prototype.allowPhrasingEdits = function () {
+  return true;
+};
+
 module.exports = Context;
