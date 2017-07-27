@@ -209,9 +209,8 @@ WYSIWYG.prototype.getSelection = function () {
   }
 };
 
-WYSIWYG.prototype.getSelectionContext = function () {
-  var ctx = this.getSelection(),
-    surfaceEl = ctx.top,
+WYSIWYG.prototype.getSelectionContext = function (ctx) {
+  var surfaceEl = ctx.top,
     foundContexts = [];
 
   ctx.selections.forEach(function (sel) {
