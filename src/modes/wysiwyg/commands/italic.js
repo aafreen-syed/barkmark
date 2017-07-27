@@ -22,8 +22,6 @@ utils.inherit(ItalicCommand, Command);
 ItalicCommand.id = ItalicCommand.prototype.name = 'italic';
 
 ItalicCommand.prototype.run = function (ctx) {
-  console.log(ctx);
-
   ctx.selections.forEach(function (sel) {
     if(sel.range.collapsed) {
       // We're in a collapsed selection, just insert text here
