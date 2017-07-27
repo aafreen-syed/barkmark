@@ -241,6 +241,42 @@ WYSIWYG.prototype.getSelectionContext = function (ctx) {
   return foundContexts;
 };
 
+WYSIWYG.prototype.transformSelectionContext = function (ctx, transformTo) {
+  var surfaceEl = ctx.top;
+
+  ctx.selections.forEach(function (sel) {
+    sel.topLevelNodes.forEach(function (node) {
+      while(node && node !== surfaceEl && node.parentNode !== surfaceEl) {
+        node = node.parentNode;
+      }
+
+      if(!node) {
+        // We can't do anything with no node
+        throw new Error('Unable to find matching parent node to transform context');
+      }
+
+      var unwrapped;
+      if(node !== surfaceEl) {
+        for(var c = 0, l = this.contexts.length; c < l; c++) {
+          if(this.contexts[c].isActive(node)) {
+            unwrapped = this.contexts[c].unwrap(node);
+            break;
+          }
+        }
+      } else {
+        unwrapped = this.defaultContext.unwrap(node);
+      }
+
+      if(typeof unwrapped !== 'undefined') {
+        var wrapped = transformTo.wrap(unwrapped);
+        node.parentNode.replaceChild(wrapped, node);
+        wrapped.normalize();
+      }
+    }, this); // END topLevelNodes.forEach
+  }, this); // END selection.forEach
+
+};
+
 WYSIWYG.Surface  = WYSIWYG.prototype.Surface  = Surface;
 WYSIWYG.Chunks   = WYSIWYG.prototype.Chunks   = Chunks;
 WYSIWYG.Commands = WYSIWYG.prototype.Commands = Commands;
