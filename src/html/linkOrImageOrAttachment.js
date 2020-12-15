@@ -99,7 +99,7 @@ function linkOrImageOrAttachment (chunks, options) {
         chunks.after += rest.map(toAnotherLink).join('');
       }
       chunks.after += after;
-      function tagopen (link) { return '<a href="' + link.href + '"' + getTitle(link) + classes + '>'; }
+      function tagopen (link) { return '<a href="' + link.href + '"' + getTitle(link) + classes + ' target="_blank" rel="noopener noreferrer">'; }
       function tagclose () { return '</a>'; }
       function toAnotherLink (link) { return ' ' + tagopen(link) + tagclose(); }
     }

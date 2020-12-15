@@ -80,7 +80,7 @@ function prompt (options, done) {
   function remove () {
     if (upload) { bindUploadEvents(true); }
     if (dom.dialog.parentElement) { dom.dialog.parentElement.removeChild(dom.dialog); }
-    options.surface.focus(options.mode);
+    // options.surface.focus(options.mode);
   }
 
   function bindUploadEvents (remove) {

@@ -8,7 +8,7 @@ module.exports = {
     code: 'code goes here',
     listitem: 'list item',
     heading: 'Heading Text',
-    link: 'link text',
+    link: 'enter link description',
     image: 'image description',
     attachment: 'attachment description'
   },
